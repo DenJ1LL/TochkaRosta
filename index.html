@@ -1,0 +1,2204 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#3D4A34" />
+<title>Точка Роста</title>
+<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png" />
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
+<link rel="manifest" href="manifest.webmanifest" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-title" content="Точка Роста" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;700;800;900&display=swap" rel="stylesheet" />
+<style>
+:root {
+  --bg: #efe6d4;
+  --soil: #2f3b2a;
+  --leaf: #4f7d4c;
+  --sledik: #e07a5f;
+  --coral: #e07a5f;
+  --gold: #e9b44c;
+  --cream: #fff8ee;
+  --ink: #243024;
+  --muted: #6b7464;
+  --ok: #2f8a66;
+  --warn: #d98b2b;
+  --danger: #d24b4b;
+  --shadow: 0 14px 40px rgba(47, 59, 42, 0.16);
+  --radius: 22px;
+  --surface: #fff;
+  --surface2: #efe6d4;
+  --track: #eadfcb;
+  --strong: var(--soil);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body {
+  font-family: Nunito, "Segoe UI", sans-serif;
+  background:
+    radial-gradient(1200px 600px at 20% -10%, #f7d9b8 0%, transparent 55%),
+    radial-gradient(900px 500px at 100% 0%, #cfe3b8 0%, transparent 50%),
+    #cfc3aa;
+  color: var(--ink);
+}
+
+.device {
+  min-height: 100%;
+  display: flex;
+  justify-content: center;
+  padding: 16px;
+}
+#app {
+  width: min(430px, 100%);
+  min-height: calc(100vh - 32px);
+  background: var(--bg);
+  border-radius: 32px;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+@media (max-width: 480px) {
+  .device { padding: 0; }
+  #app {
+    width: 100%;
+    min-height: 100vh;
+    border-radius: 0;
+  }
+}
+
+button, input, select, textarea { font-family: inherit; }
+button { cursor: pointer; border: 0; background: none; color: inherit; }
+img { max-width: 100%; }
+
+.screen {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+.scroll {
+  flex: 1;
+  overflow: auto;
+  padding: 18px 18px 108px;
+}
+.top {
+  padding: 18px 18px 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.brand {
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  font-size: 18px;
+}
+.chip {
+  background: var(--surface);
+  border-radius: 999px;
+  padding: 6px 10px;
+  font-size: 13px;
+  font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 6px 16px rgba(47, 59, 42, 0.08);
+}
+
+.hero {
+  background: linear-gradient(160deg, #3d4a34, #5b7a48);
+  color: #fff;
+  border-radius: 28px;
+  padding: 18px;
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 14px;
+}
+.hero h1 { font-size: 26px; line-height: 1.15; margin: 8px 0 6px; }
+.hero p { opacity: 0.9; font-size: 14px; }
+.mascot {
+  width: 88px;
+  height: 88px;
+  float: right;
+  margin: -8px -4px 0 8px;
+  overflow: visible;
+  animation: mascotBob 3.6s ease-in-out infinite;
+}
+@keyframes mascotBob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
+@media (prefers-reduced-motion: reduce) { .mascot { animation: none; } }
+
+.card {
+  background: var(--cream);
+  border-radius: var(--radius);
+  padding: 14px;
+  margin-bottom: 12px;
+  box-shadow: 0 8px 20px rgba(47, 59, 42, 0.06);
+}
+.card h3 { font-size: 16px; margin-bottom: 8px; }
+.row { display: flex; gap: 10px; }
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+
+.stat {
+  background: var(--surface);
+  border-radius: 18px;
+  padding: 12px;
+  text-align: center;
+  transition: transform 0.2s;
+}
+.stat:active { transform: scale(0.96); }
+.stat b { display: block; font-size: 22px; }
+.stat span { color: var(--muted); font-size: 11px; font-weight: 700; }
+
+.streak-fire b { color: var(--coral); text-shadow: 0 0 10px rgba(224, 122, 95, 0.2); }
+.streak-star b { color: var(--gold); text-shadow: 0 0 10px rgba(233, 180, 76, 0.2); }
+.streak-quiz b { color: var(--leaf); text-shadow: 0 0 10px rgba(79, 125, 76, 0.2); }
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 48px;
+  border-radius: 16px;
+  font-weight: 800;
+  font-size: 15px;
+  padding: 0 14px;
+}
+.btn-primary { background: var(--soil); color: #fff; }
+.btn-coral { background: var(--coral); color: #fff; }
+.btn-leaf { background: var(--leaf); color: #fff; }
+.btn-gold { background: var(--gold); color: var(--soil); }
+.btn-ghost { background: var(--surface); color: var(--strong); }
+.btn.sm { min-height: 40px; font-size: 13px; width: auto; padding: 0 12px; }
+
+.nav {
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: 12px;
+  background: var(--surface);
+  border-radius: 22px;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  padding: 8px 4px 10px;
+  box-shadow: 0 10px 30px rgba(47, 59, 42, 0.18);
+  z-index: 5;
+}
+.nav button {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 800;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+.nav button.on { color: var(--strong); }
+.nav .ico { font-size: 18px; }
+
+.role-wrap {
+  padding: 28px 22px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 100%;
+  gap: 14px;
+}
+.role-card {
+  background: var(--cream);
+  border-radius: 28px;
+  padding: 20px;
+  text-align: left;
+  box-shadow: var(--shadow);
+}
+.role-card h2 { font-size: 22px; margin: 6px 0; }
+.role-card p { color: var(--muted); margin-bottom: 14px; }
+
+.meter {
+  height: 14px;
+  background: var(--track);
+  border-radius: 99px;
+  overflow: hidden;
+  position: relative;
+}
+.meter span {
+  display: block;
+  height: 100%;
+  border-radius: 99px;
+  transition: width 0.35s ease, background 0.35s ease;
+}
+.meter-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  color: var(--muted);
+  font-weight: 800;
+  margin-top: 6px;
+}
+.zone-green { background: linear-gradient(90deg, #7dbe6e, #3d8b6e); }
+.zone-warn { background: var(--warn); }
+.zone-danger { background: var(--danger); }
+
+.chat-log {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 280px;
+}
+.bubble {
+  max-width: 86%;
+  padding: 10px 12px;
+  border-radius: 16px;
+  font-size: 14px;
+  line-height: 1.4;
+  font-weight: 700;
+}
+.bubble.bot { background: var(--surface); align-self: flex-start; }
+.bubble.me { background: var(--soil); color: #fff; align-self: flex-end; }
+.quick { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0; }
+.quick button {
+  background: var(--surface);
+  border-radius: 999px;
+  padding: 8px 12px;
+  font-size: 13px;
+  font-weight: 800;
+}
+.composer {
+  display: flex;
+  gap: 8px;
+}
+.composer input, .field {
+  flex: 1;
+  border: 0;
+  background: var(--surface);
+  border-radius: 14px;
+  padding: 12px 14px;
+  font-size: 15px;
+  width: 100%;
+}
+
+.food-card {
+  background: var(--surface);
+  border-radius: 24px;
+  padding: 18px;
+  text-align: center;
+  min-height: 210px;
+}
+.food-emoji { font-size: 72px; line-height: 1; }
+.badge {
+  display: inline-flex;
+  background: var(--surface2);
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.lane-game {
+  height: 340px;
+  background: #1f2a1c;
+  border-radius: 24px;
+  position: relative;
+  overflow: hidden;
+  color: #fff;
+}
+.lanes {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+}
+.lane {
+  border-left: 1px solid rgba(255,255,255,0.08);
+}
+.note {
+  position: absolute;
+  width: 22%;
+  height: 54px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  transform: translateX(-50%);
+  left: var(--x);
+  top: var(--y);
+  background: rgba(255,255,255,0.12);
+  transition: background 0.2s;
+}
+.note.bad { background: rgba(210, 75, 75, 0.4); border: 2px solid var(--danger); }
+.hitbar {
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  bottom: 62px;
+  height: 8px;
+  background: var(--sledik);
+  border-radius: 99px;
+}
+.lane-btns {
+  position: absolute;
+  left: 6px;
+  right: 6px;
+  bottom: 8px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+}
+.lane-btns button {
+  background: rgba(255,255,255,0.14);
+  color: #fff;
+  border-radius: 14px;
+  min-height: 46px;
+  font-size: 20px;
+}
+
+.challenge {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+.challenge .mark {
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
+  background: var(--surface2);
+  display: grid;
+  place-items: center;
+  font-size: 18px;
+  flex: none;
+}
+.list-item {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--surface2);
+  font-weight: 700;
+}
+.rank-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 0;
+}
+.avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  background: var(--surface2);
+  font-size: 18px;
+}
+.note-card {
+  background: linear-gradient(135deg, #fff4d6, #ffe8dc);
+  border-radius: 18px;
+  padding: 14px;
+  margin-bottom: 10px;
+}
+.warn-box {
+  background: var(--surface);
+  border-left: 4px solid var(--gold);
+  border-radius: 12px;
+  padding: 10px 12px;
+  font-size: 12px;
+  color: var(--muted);
+  font-weight: 700;
+  margin-top: 10px;
+}
+.skin {
+  text-align: center;
+  background: var(--surface);
+  border-radius: 16px;
+  padding: 12px 8px;
+}
+.skin.locked { opacity: 0.45; }
+.tiny { font-size: 12px; color: var(--muted); font-weight: 700; }
+.postcard {
+  background: linear-gradient(135deg, var(--surface), var(--cream));
+  border-radius: 20px;
+  padding: 16px;
+  min-width: 240px;
+  max-width: 240px;
+  box-shadow: 0 8px 24px rgba(47, 59, 42, 0.08);
+  border: 1px solid rgba(143, 191, 106, 0.2);
+  flex-shrink: 0;
+}
+.postcard p { font-size: 14px; font-weight: 800; line-height: 1.4; color: var(--strong); margin-top: 4px; }
+
+.h-scroll { display: flex; gap: 12px; overflow-x: auto; padding: 4px 4px 12px; scroll-snap-type: x mandatory; }
+.postcard { scroll-snap-align: start; }
+.h-scroll::-webkit-scrollbar { display: none; }
+.pill {
+  background: var(--surface);
+  border-radius: 14px;
+  padding: 10px 12px;
+  min-width: 140px;
+  font-size: 13px;
+  font-weight: 800;
+}
+.quiz-opt {
+  width: 100%;
+  text-align: left;
+  background: var(--surface);
+  border-radius: 16px;
+  padding: 12px;
+  margin-bottom: 8px;
+  font-weight: 800;
+}
+.quiz-opt.ok { background: #d9f0df; }
+.quiz-opt.bad { background: #f8d4d0; }
+.back {
+  font-weight: 800;
+  color: var(--strong);
+  font-size: 14px;
+}
+
+.map { display: flex; flex-direction: column; align-items: center; padding-bottom: 12px; }
+.map-section { align-self: stretch; text-align: center; font-weight: 900; font-size: 13px; color: var(--strong); background: var(--surface); border-radius: 999px; padding: 8px 12px; margin: 14px 0 10px; }
+.map-row { display: flex; flex-direction: column; align-items: center; margin: 6px 0 12px; transform: translateX(var(--dx)); }
+.map-node { width: 68px; height: 68px; border-radius: 50%; font-size: 28px; font-weight: 900; display: grid; place-items: center; color: #fff; border-bottom: 6px solid rgba(0,0,0,.2); transition: transform .15s; }
+.map-node:active:not(:disabled) { transform: translateY(3px); border-bottom-width: 3px; }
+.map-node.done { background: var(--leaf); }
+.map-node.current { background: var(--coral); animation: mapPulse 1.6s ease-in-out infinite; }
+.map-node.locked { background: #cfc3aa; color: #8a826e; cursor: default; font-size: 22px; }
+.map-node.chest.done { background: var(--gold); }
+.map-name { margin-top: 6px; font-size: 12px; font-weight: 800; color: var(--muted); text-align: center; max-width: 140px; }
+.map-start { display: block; margin: 4px auto 0; width: max-content; background: var(--coral); color: #fff; border-radius: 999px; padding: 2px 10px; font-size: 11px; }
+@keyframes mapPulse { 0%,100% { box-shadow: 0 0 0 0 rgba(224,122,95,.5); } 50% { box-shadow: 0 0 0 12px rgba(224,122,95,0); } }
+
+.trail-path { display: flex; justify-content: space-between; gap: 4px; margin-bottom: 12px; }
+.trail-dot { flex: 1; min-height: 38px; border-radius: 12px; background: var(--surface); display: grid; place-items: center; font-weight: 900; color: var(--muted); font-size: 14px; }
+.trail-dot.past { background: var(--leaf); color: #fff; }
+.trail-dot.now { background: var(--coral); font-size: 20px; }
+
+/* единый ритм отступов: 14px между блоками, 10px внутри */
+.hero { margin-bottom: 14px; padding: 20px 18px; }
+.hero h1 { margin: 10px 0 8px; }
+.grid-3 { gap: 10px; margin-bottom: 14px; }
+.stat { padding: 14px 8px; }
+.card { margin-bottom: 14px; padding: 16px; }
+.card h3 { margin-bottom: 6px; }
+.card .row { gap: 10px; }
+.scroll > h3 { margin: 22px 4px 8px; font-size: 17px; }
+.h-scroll { padding: 2px 2px 12px; margin: 0 -2px 14px !important; }
+.note-card { margin-bottom: 14px; }
+.scroll > .btn + .btn { margin-top: 10px !important; }
+
+/* чат Следика */
+.chat-log { gap: 12px; margin-bottom: 14px; }
+.bubble { padding: 12px 14px; }
+.quick { gap: 10px; margin: 14px 0; }
+.quick button { padding: 10px 14px; }
+.warn-box { margin: 14px 0 12px; padding: 12px 14px; line-height: 1.4; }
+.composer { gap: 10px; align-items: stretch; margin-bottom: 8px; }
+.composer input { padding: 14px 16px; }
+.composer .btn { width: auto; min-width: 56px; }
+
+/* регистрация */
+.reg-label { display: block; font-weight: 800; font-size: 13px; color: var(--muted); margin: 0 0 6px 4px; }
+#reg-form .field { background: var(--surface); border: 2px solid transparent; margin-bottom: 14px; }
+#reg-form .field:focus { outline: none; border-color: var(--leaf); }
+.reg-err { min-height: 18px; margin: -4px 4px 10px; font-size: 13px; font-weight: 800; color: var(--danger); }
+
+input, select, textarea { color: var(--ink); }
+::placeholder { color: var(--muted); opacity: .8; }
+.theme-btn { width: 36px; height: 36px; border-radius: 12px; background: var(--surface); font-size: 18px; display: grid; place-items: center; box-shadow: 0 6px 16px rgba(47, 59, 42, 0.08); flex: none; }
+.theme-btn:active { transform: scale(.94); }
+
+/* тёмная тема */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #1a2117;
+  --cream: #232c1f;
+  --ink: #ede7d8;
+  --muted: #a3ac99;
+  --soil: #44593a;
+  --strong: #e3ecd6;
+  --surface: #2c3827;
+  --surface2: #374432;
+  --track: #3a4833;
+  --shadow: 0 14px 40px rgba(0, 0, 0, 0.5);
+}
+:root[data-theme="dark"] body {
+  background:
+    radial-gradient(1200px 600px at 20% -10%, #2a3523 0%, transparent 55%),
+    radial-gradient(900px 500px at 100% 0%, #1f2d1c 0%, transparent 50%),
+    #11160f;
+}
+:root[data-theme="dark"] .btn-gold { color: #2f3b2a; }
+:root[data-theme="dark"] .note-card { background: linear-gradient(135deg, #3b3523, #3a2c27); }
+:root[data-theme="dark"] .quiz-opt.ok { background: #1f4a33; }
+:root[data-theme="dark"] .quiz-opt.bad { background: #522b28; }
+:root[data-theme="dark"] .map-node.locked { background: #3a4833; color: #7b8672; }
+:root[data-theme="dark"] .postcard { border-color: rgba(143, 191, 106, 0.25); }
+
+/* тёмная тема: контраст */
+:root[data-theme="dark"] {
+  --muted: #b3bba8;
+  --danger: #ff8a80;
+  --ok: #6fd0a6;
+  --warn: #e8a145;
+}
+:root[data-theme="dark"] h1,
+:root[data-theme="dark"] h2,
+:root[data-theme="dark"] h3,
+:root[data-theme="dark"] h4 { color: var(--ink); }
+:root[data-theme="dark"] .hero h1,
+:root[data-theme="dark"] .hero p { color: #fff; }
+:root[data-theme="dark"] .btn-leaf,
+:root[data-theme="dark"] .trail-dot.past { background: #3f6b3d; color: #fff; }
+:root[data-theme="dark"] .btn-coral,
+:root[data-theme="dark"] .map-start { background: #b94f36; color: #fff; }
+:root[data-theme="dark"] .btn-primary { background: #4a6340; color: #fff; }
+:root[data-theme="dark"] .streak-quiz b { color: #8fc58a; }
+:root[data-theme="dark"] .skin { color: var(--ink); }
+:root[data-theme="dark"] .skin.locked { opacity: 1; }
+:root[data-theme="dark"] .skin.locked > *:not(.tiny) { opacity: .65; }
+:root[data-theme="dark"] .map-node.locked { background: #3a4833; color: #b4bca9; }
+:root[data-theme="dark"] .quick button,
+:root[data-theme="dark"] .pill,
+:root[data-theme="dark"] .quiz-opt { color: var(--ink); }
+:root[data-theme="dark"] .quiz-opt.ok,
+:root[data-theme="dark"] .quiz-opt.bad { color: #fff; }
+:root[data-theme="dark"] .badge { color: var(--ink); }
+:root[data-theme="dark"] .role-card { box-shadow: 0 0 0 1px rgba(143, 191, 106, 0.18), var(--shadow); }
+
+.meal { display: flex; gap: 10px; align-items: flex-start; padding: 8px 0; border-top: 1px solid var(--track); }
+.meal:first-of-type { border-top: 0; }
+.meal-img { width: 84px; height: 84px; object-fit: cover; border-radius: 14px; flex: none; background: var(--track); }
+.meal-body { flex: 1; min-width: 0; }
+.meal-comment { font-size: 14px; font-weight: 700; margin: 4px 0 6px; overflow-wrap: anywhere; }
+.meal-big { padding: 10px 0; border-top: 1px solid var(--track); }
+.meal-big:first-of-type { border-top: 0; }
+.meal-img-big { width: 100%; max-height: 240px; object-fit: cover; border-radius: 16px; background: var(--track); display: block; }
+.meal-big form .field { flex: 1; min-width: 0; }
+</style>
+</head>
+<body>
+<div class="device"><div id="app"></div></div>
+<input type="file" id="meal-file" accept="image/*" capture="environment" hidden />
+<script>
+const FOODS = [
+  { id: "apple", name: "Яблоко", emoji: "🍎", gi: "низкий", tip: "В разных продуктах бывает разное количество углеводов. Состав и порцию смотрят отдельно." },
+  { id: "juice", name: "Сок", emoji: "🧃", gi: "высокий", tip: "Количество углеводов зависит от напитка и объёма. Проверяйте этикетку вместе со взрослым." },
+  { id: "candy", name: "Конфета", emoji: "🍬", gi: "высокий", tip: "Состав и углеводы у разных конфет отличаются. Ищите информацию на упаковке." },
+  { id: "bread", name: "Белый хлеб", emoji: "🍞", gi: "высокий", tip: "На упаковке можно найти состав и количество углеводов." },
+  { id: "oats", name: "Овсянка", emoji: "🥣", gi: "средний", tip: "У разных видов овсянки состав и пищевая ценность могут отличаться." },
+  { id: "chicken", name: "Курица", emoji: "🍗", gi: "нет", tip: "Игра предлагает изучить продукт, а не выбирать его для изменения сахара." },
+  { id: "water", name: "Вода", emoji: "💧", gi: "нет", tip: "Вода — напиток. Эта карточка не подсказывает, как лечить изменения сахара." },
+  { id: "yogurt", name: "Йогурт без сахара", emoji: "🥛", gi: "низкий", tip: "Проверьте состав и таблицу пищевой ценности на упаковке." },
+  { id: "chips", name: "Чипсы", emoji: "🍟", gi: "высокий", tip: "Состав и пищевая ценность указаны на упаковке." },
+  { id: "berries", name: "Ягоды", emoji: "🫐", gi: "низкий", tip: "Интересный факт: продукты могут содержать углеводы в разном количестве." },
+  { id: "banana", name: "Банан", emoji: "🍌", gi: "средний", tip: "Можно потренироваться находить информацию о продукте вместе со взрослым." },
+  { id: "soda", name: "Газировка", emoji: "🥤", gi: "высокий", tip: "У разных напитков разный состав. Сравните этикетки как исследователи." }
+];
+
+const GI_TABLE = [
+  { name: "Брокколи", gi: 15, xe: 0.2 },
+  { name: "Яблоко", gi: 38, xe: 1 },
+  { name: "Гречка", gi: 50, xe: 2 },
+  { name: "Банан", gi: 62, xe: 2 },
+  { name: "Белый хлеб", gi: 75, xe: 1 },
+  { name: "Картофель фри", gi: 75, xe: 2.5 },
+  { name: "Мёд", gi: 87, xe: 1 },
+  { name: "Глюкоза", gi: 100, xe: 1 }
+];
+
+const QUIZ = [
+  {
+    q: "Где искать количество углеводов в упакованном продукте?",
+    options: ["В таблице пищевой ценности", "По цвету упаковки", "Только по названию"],
+    a: 0,
+    why: "Этикетка помогает узнать состав конкретного продукта. Для решений о лечении следуют личному плану семьи и рекомендациям медицинской команды."
+  },
+  {
+    q: "Если тебе стало плохо или ты тревожишься из-за самочувствия, кому сказать?",
+    options: ["Надёжному взрослому рядом", "Никому, нужно справиться самому", "Только игровому персонажу"],
+    a: 0,
+    why: "Следик поддержит, но не заменит взрослого и медицинскую команду."
+  },
+  {
+    q: "Правда ли, что физическая активность влияет на всех одинаково?",
+    options: ["Нет, у людей бывает по-разному", "Да, всегда одинаково", "Нет, движение никогда ни на что не влияет"],
+    a: 0,
+    why: "Реакции индивидуальны. План активности обсуждают с семьёй и медицинской командой."
+  },
+  {
+    q: "Что показывает гликемический индекс (ГИ)?",
+    options: ["Как углеводы в продукте могут влиять на глюкозу", "Сколько инсулина нужно человеку", "Можно ли есть продукт"],
+    a: 0,
+    why: "ГИ — только одна характеристика еды, он не определяет дозу и не делит продукты на разрешённые и запрещённые."
+  },
+  {
+    q: "Почему рейтинг в игре не смотрит на цифру сахара?",
+    options: ["Чтобы не оценивать здоровье и не стыдить", "Потому что здоровье неважно", "Так проще читерить"],
+    a: 0,
+    why: "Мы отмечаем интерес, старание и обучение — не медицинские показатели."
+  },
+  {
+    q: "Что такое хлебная единица (ХЕ) в учебном примере приложения?",
+    options: ["Способ условно считать углеводы", "Доза лекарства", "Оценка полезности еды"],
+    a: 0,
+    why: "Подсчёт ХЕ не определяет дозу лекарства. Для личного плана следуют указаниям своей медицинской команды."
+  },
+  {
+    q: "У всех ли людей одинаково меняется глюкоза после одного продукта?",
+    options: ["Нет, реакции могут различаться", "Да, всегда одинаково", "Зависит только от цвета продукта"],
+    a: 0,
+    why: "Игровые примеры не предсказывают индивидуальную реакцию организма."
+  },
+  {
+    q: "Что можно сделать вместе в магазине?",
+    options: ["Найти таблицу пищевой ценности", "Угадать состав по картинке", "Соревноваться, кто съест меньше"],
+    a: 0,
+    why: "Изучать этикетки можно как семейное исследование — без запретов и соревнования."
+  }
+];
+
+const CHALLENGE_TEMPLATES = [
+  { title: "Собрать перекус и прочитать этикетку", emoji: "🥪", xp: 40, hint: "Посмотрите вместе на состав и таблицу пищевой ценности. Выбор еды — дело семьи, без оценок и запретов." },
+  { title: "Найти 3 этикетки в магазине", emoji: "🛒", xp: 50, hint: "Найдите, где указаны состав и углеводы. Не нужно оценивать продукты как хорошие или плохие." },
+  { title: "Выбрать семейную прогулку", emoji: "🚶", xp: 45, hint: "Выберите приятный маршрут и темп вместе. Любые планы активности учитывают рекомендации вашей медицинской команды." },
+  { title: "Мини-квиз на двоих", emoji: "❓", xp: 30, hint: "Ответьте на три вопроса и обсудите их без оценок." },
+  { title: "Семейный ужин без гаджетов", emoji: "📵", xp: 35, hint: "Поговорите о прошедшем дне и любимых вкусах — без подсчёта очков за еду." },
+  { title: "Придумать сказку про Следика", emoji: "📖", xp: 60, hint: "Придумайте приключение, в котором Следик просит помощи у взрослого." },
+  { title: "Записать доброе послание", emoji: "💌", xp: 30, hint: "Подарите друг другу слова поддержки — просто так." },
+  { title: "Устроить семейный вечер настольных игр", emoji: "🎲", xp: 45, hint: "Выберите игру, в которую всем хочется сыграть." },
+  { title: "Придумать любимый перекусный плейлист", emoji: "🎵", xp: 35, hint: "Составьте список песен, которые поднимают настроение." }
+];
+
+const SKINS = [
+  { id: "sledik", name: "Следик", cost: 0, emoji: "🦊" },
+  { id: "arctic", name: "Полярный", cost: 100, emoji: "❄️" },
+  { id: "fire", name: "Огненный", cost: 200, emoji: "🔥" },
+  { id: "galaxy", name: "Звездный", cost: 300, emoji: "🌌" }
+];
+
+const CLOTHES = [
+  { id: "none", name: "Без одежды", cost: 0, level: 0, emoji: "❌" },
+  { id: "cap", name: "Кепка", cost: 50, level: 2, emoji: "🧢" },
+  { id: "scarf", name: "Шарф", cost: 80, level: 4, emoji: "🧣" },
+  { id: "glasses", name: "Очки", cost: 120, level: 6, emoji: "👓" },
+  { id: "vest", name: "Жилетка", cost: 200, level: 8, emoji: "🦺" },
+  { id: "crown", name: "Корона", cost: 500, level: 12, emoji: "👑" }
+];
+
+const LEADERBOARD = [
+  { name: "Миша", you: true, xp: 0, emoji: "🦊" },
+  { name: "Алина", xp: 920, emoji: "🦊" },
+  { name: "Тимур", xp: 870, emoji: "🦊" },
+  { name: "София", xp: 810, emoji: "🦊" },
+  { name: "Марк", xp: 760, emoji: "🦊" }
+];
+
+function mascotSvg(skin, level = 0, outfit = "none") {
+  const themes = {
+    sledik: { body: "#e8825f", light: "#f5a883", dark: "#c25f45", tip: "#4a3530", white: "#fff6e8", inner: "#f7bba8", blush: "#ff8a8a", eye: "#3a2a22", pupil: "#3a2a22", nose: "#2a1f1f", frame: "#3d4a34" },
+    arctic: { body: "#cfe6f5", light: "#f0f9ff", dark: "#a3c6de", tip: "#7ba3c2", white: "#ffffff", inner: "#bcdff2", blush: "#ffb0c0", eye: "#27405a", pupil: "#27405a", nose: "#27405a", frame: "#3d6a8a" },
+    fire: { body: "#ff5a14", light: "#ff9a45", dark: "#d23a00", tip: "#7a1f00", white: "#ffe27a", inner: "#ffb347", blush: "#ffd23f", eye: "#3a1200", pupil: "#3a1200", nose: "#3a1200", frame: "#7a1f00" },
+    galaxy: { body: "#4a3f92", light: "#7468c9", dark: "#2d2563", tip: "#1a1540", white: "#e9e6fb", inner: "#9088e0", blush: "#e08fe6", eye: "#ffd86b", pupil: "#1a1540", nose: "#1a1540", frame: "#ffd86b" }
+  };
+  const c = themes[skin] || themes.sledik;
+  mascotSvg.n = (mascotSvg.n || 0) + 1;
+  const u = "m" + mascotSvg.n;
+
+  const glow = level > 5 ? `<circle cx="60" cy="62" r="48" fill="url(#${u}g)">
+      <animate attributeName="r" values="44;52;44" dur="3s" repeatCount="indefinite" />
+    </circle>` : "";
+
+  const sparkle = (x, y, d) => `<path d="M${x} ${y - 4} L${x + 1.2} ${y - 1.2} L${x + 4} ${y} L${x + 1.2} ${y + 1.2} L${x} ${y + 4} L${x - 1.2} ${y + 1.2} L${x - 4} ${y} L${x - 1.2} ${y - 1.2} Z" fill="#ffd86b">
+      <animate attributeName="opacity" values="0;1;0" dur="2.4s" begin="${d}s" repeatCount="indefinite" /></path>`;
+  const sparkles = level >= 9 ? sparkle(14, 30, 0) + sparkle(106, 24, 0.8) + sparkle(100, 92, 1.6) : "";
+
+  const extras = {
+    sledik: `<path d="M60 26 C56 31 56 36 60 41 C64 36 64 31 60 26 Z" fill="${c.light}" opacity="0.7"/>`,
+    arctic: `<g stroke="#fff" stroke-width="1.4" stroke-linecap="round" opacity="0.95">
+        <path d="M60 28 V40 M54.8 31 L65.2 37 M65.2 31 L54.8 37"/></g>
+      <circle cx="16" cy="40" r="1.6" fill="#fff"/><circle cx="104" cy="44" r="1.3" fill="#fff"/><circle cx="108" cy="20" r="1.5" fill="#fff"/>`,
+    fire: `<path d="M60 22 C54 30 55 36 60 42 C65 36 66 30 60 22 Z" fill="#ffcc00"/>
+      <path d="M60 28 C57 33 58 37 60 40 C62 37 63 33 60 28 Z" fill="#fff3b0"/>`,
+    galaxy: `<g fill="#fff"><circle cx="46" cy="32" r="1.3"/><circle cx="74" cy="30" r="1.6"/><circle cx="60" cy="36" r="1.1"/>
+        <circle cx="50" cy="92" r="1.3"/><circle cx="72" cy="98" r="1.6"/><circle cx="64" cy="88" r="1"/></g>
+      <path d="M86 40 a6 6 0 1 0 4 9 a5 5 0 1 1 -4 -9 Z" fill="#ffd86b" opacity="0.9"/>`
+  };
+
+  const clothing = {
+    cap: `<path d="M33 37 C33 11 87 11 87 37 Q60 30 33 37 Z" fill="#3d4a34"/>
+      <path d="M60 15 C54 20 52 28 53 33" stroke="#2c3626" stroke-width="1.5" fill="none"/>
+      <path d="M60 15 C66 20 68 28 67 33" stroke="#2c3626" stroke-width="1.5" fill="none"/>
+      <circle cx="60" cy="14.5" r="3" fill="#4f7d4c"/>
+      <path d="M62 33 Q86 26 108 38 Q96 47 64 39 Z" fill="#4f7d4c"/>
+      <path d="M62 33 Q86 26 108 38" stroke="#6a9e66" stroke-width="1.2" fill="none"/>`,
+    scarf: `<path d="M33 78 C48 90 72 90 87 78 L90 89 C72 101 48 101 30 89 Z" fill="#d24b4b"/>
+      <path d="M40 83 L38 95 M52 87 L51 99 M64 88 L64 100 M76 86 L77 98" stroke="#f6c1a8" stroke-width="2.2" stroke-linecap="round"/>
+      <path d="M72 94 L84 114 L70 117 L63 97 Z" fill="#c13d3d"/>
+      <path d="M69 103 L78 101 M71 109 L80 107" stroke="#f6c1a8" stroke-width="2" stroke-linecap="round"/>`,
+    glasses: `<g fill="#bfe6ff" fill-opacity="0.22" stroke="${c.frame}" stroke-width="2.2">
+        <circle cx="43" cy="50" r="10"/><circle cx="77" cy="50" r="10"/></g>
+      <path d="M53 49 Q60 45 67 49" stroke="${c.frame}" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+      <path d="M33 48 L24 44 M87 48 L96 44" stroke="${c.frame}" stroke-width="2" stroke-linecap="round"/>
+      <path d="M36 45 Q40 42 44 43" stroke="#fff" stroke-width="1.6" fill="none" stroke-linecap="round" opacity="0.8"/>`,
+    vest: `<path d="M36 80 L53 79 L57 103 L33 104 Z" fill="#4f7d4c"/>
+      <path d="M84 80 L67 79 L63 103 L87 104 Z" fill="#4f7d4c"/>
+      <path d="M36 80 L53 79 L57 103" stroke="#3a6238" stroke-width="1.4" fill="none"/>
+      <path d="M84 80 L67 79 L63 103" stroke="#3a6238" stroke-width="1.4" fill="none"/>
+      <circle cx="58" cy="90" r="1.8" fill="#e9b44c"/><circle cx="62" cy="97" r="1.8" fill="#e9b44c"/>
+      <rect x="39" y="92" width="10" height="7" rx="1.5" fill="#3f6b3d"/>`,
+    crown: `<path d="M36 33 L38 9 L49 20 L60 4 L71 20 L82 9 L84 33 Q60 28 36 33 Z" fill="url(#${u}c)" stroke="#b8860b" stroke-width="1.2" stroke-linejoin="round"/>
+      <path d="M37 30 Q60 25 83 30" stroke="#b8860b" stroke-width="1.2" fill="none"/>
+      <circle cx="60" cy="19" r="2.8" fill="#d24b4b" stroke="#8a2a2a" stroke-width=".6"/>
+      <circle cx="47" cy="25" r="1.8" fill="#4fa3d1"/><circle cx="73" cy="25" r="1.8" fill="#4fa3d1"/>
+      <circle cx="38" cy="9" r="1.8" fill="#fff3b0"/><circle cx="82" cy="9" r="1.8" fill="#fff3b0"/><circle cx="60" cy="4" r="1.8" fill="#fff3b0"/>`
+  };
+
+  const ear = `<path d="M30 44 L21 5 C34 9 49 18 55 31 Z" fill="url(#${u}e)"/>
+      <path d="M32 37 L27 15 C35 19 43 25 47 32 Z" fill="${c.inner}"/>
+      <path d="M31 35 L28 20" stroke="${c.white}" stroke-width="1.2" stroke-linecap="round" opacity="0.7"/>`;
+
+  return `<svg class="mascot" viewBox="0 0 120 120" aria-hidden="true">
+    <defs>
+      <radialGradient id="${u}b" cx="0.4" cy="0.3" r="0.9">
+        <stop offset="0" stop-color="${c.light}"/><stop offset="0.55" stop-color="${c.body}"/><stop offset="1" stop-color="${c.dark}"/>
+      </radialGradient>
+      <linearGradient id="${u}e" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="${c.tip}"/><stop offset="0.36" stop-color="${c.tip}"/>
+        <stop offset="0.38" stop-color="${c.body}"/><stop offset="1" stop-color="${c.dark}"/>
+      </linearGradient>
+      <radialGradient id="${u}g"><stop offset="0.5" stop-color="${c.light}" stop-opacity="0.35"/><stop offset="1" stop-color="${c.light}" stop-opacity="0"/></radialGradient>
+      <linearGradient id="${u}c" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff0a8"/><stop offset="1" stop-color="#e9b44c"/></linearGradient>
+      <clipPath id="${u}t"><path d="M80 98 C106 106 122 80 109 44 C105 58 98 74 77 84 Z"/></clipPath>
+    </defs>
+
+    ${glow}
+    <ellipse cx="60" cy="111" rx="34" ry="6" fill="rgba(0,0,0,.14)"/>
+
+    <!-- Хвост -->
+    <g>
+      <animateTransform attributeName="transform" type="rotate" values="-3 80 96;5 80 96;-3 80 96" dur="3.2s" repeatCount="indefinite" />
+      <path d="M80 98 C106 106 122 80 109 44 C105 58 98 74 77 84 Z" fill="url(#${u}b)"/>
+      <g clip-path="url(#${u}t)">
+        <path d="M90 72 Q104 60 124 62 L124 30 L90 30 Z" fill="${c.white}"/>
+      </g>
+      <path d="M86 94 C98 92 106 84 110 70" stroke="${c.dark}" stroke-width="1.3" fill="none" opacity="0.35" stroke-linecap="round"/>
+    </g>
+
+    <!-- Задние лапы -->
+    <ellipse cx="41" cy="106" rx="11" ry="5.5" fill="${c.tip}"/>
+    <ellipse cx="79" cy="106" rx="11" ry="5.5" fill="${c.tip}"/>
+
+    <!-- Тело -->
+    <path d="M36 108 C30 90 38 73 60 72 C82 73 90 90 84 108 Z" fill="url(#${u}b)"/>
+    <ellipse cx="60" cy="93" rx="13.5" ry="15" fill="${c.white}"/>
+    <path d="M52 84 Q60 89 68 84" stroke="${c.dark}" stroke-width="1" fill="none" opacity="0.18" stroke-linecap="round"/>
+
+    <!-- Передние лапки -->
+    <path d="M47 92 C44 99 44 104 46 107 L56 107 C57 102 56 97 54 92 Z" fill="url(#${u}b)"/>
+    <path d="M73 92 C76 99 76 104 74 107 L64 107 C63 102 64 97 66 92 Z" fill="url(#${u}b)"/>
+    <ellipse cx="51" cy="107" rx="6.5" ry="3.8" fill="${c.tip}"/>
+    <ellipse cx="69" cy="107" rx="6.5" ry="3.8" fill="${c.tip}"/>
+    <path d="M49 108.5 V105.5 M52 109 V106 M54 108.5 V105.5 M66 108.5 V105.5 M69 109 V106 M71 108.5 V105.5" stroke="${c.white}" stroke-width="0.7" stroke-linecap="round" opacity="0.55"/>
+
+    <!-- Уши -->
+    ${ear}
+    <g transform="translate(120 0) scale(-1 1)">${ear}</g>
+
+    <!-- Голова -->
+    <path d="M60 24 C80 24 97 34 98 52 L104 60 L95 62 L99 70 L86 68 C80 78 70 83 60 83 C50 83 40 78 34 68 L21 70 L25 62 L16 60 L22 52 C23 34 40 24 60 24 Z" fill="url(#${u}b)"/>
+    <path d="M30 32 Q44 25 58 26" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round" opacity="0.28"/>
+
+    <!-- Белая мордочка и щёчки -->
+    <path d="M21 70 L25 62 L16 60 L22 54 C34 56 48 58 60 66 C72 58 86 56 98 54 L104 60 L95 62 L99 70 L86 68 C80 78 70 83 60 83 C50 83 40 78 34 68 Z" fill="${c.white}"/>
+    <path d="M22 62 L30 64 M98 62 L90 64" stroke="${c.dark}" stroke-width="0.8" stroke-linecap="round" opacity="0.25"/>
+
+    ${extras[skin] || ""}
+
+    <!-- Брови -->
+    <ellipse cx="41" cy="40" rx="3.4" ry="1.8" transform="rotate(-18 41 40)" fill="${c.white}" opacity="0.9"/>
+    <ellipse cx="79" cy="40" rx="3.4" ry="1.8" transform="rotate(18 79 40)" fill="${c.white}" opacity="0.9"/>
+
+    <!-- Румянец -->
+    <ellipse cx="34" cy="64" rx="5.5" ry="3.4" fill="${c.blush}" opacity="0.4"/>
+    <ellipse cx="86" cy="64" rx="5.5" ry="3.4" fill="${c.blush}" opacity="0.4"/>
+
+    <!-- Глаза -->
+    <g>
+      <ellipse cx="43" cy="51" rx="5.8" ry="6.6" fill="${c.eye}">
+        <animate attributeName="ry" values="6.6;6.6;0.7;6.6" keyTimes="0;0.93;0.96;1" dur="4.5s" repeatCount="indefinite" />
+      </ellipse>
+      <ellipse cx="77" cy="51" rx="5.8" ry="6.6" fill="${c.eye}">
+        <animate attributeName="ry" values="6.6;6.6;0.7;6.6" keyTimes="0;0.93;0.96;1" dur="4.5s" repeatCount="indefinite" />
+      </ellipse>
+      <ellipse cx="43.4" cy="51.6" rx="3.4" ry="4.4" fill="${c.pupil}"/>
+      <ellipse cx="77.4" cy="51.6" rx="3.4" ry="4.4" fill="${c.pupil}"/>
+      <g fill="#fff">
+        <circle cx="45" cy="48.4" r="2">
+          <animate attributeName="opacity" values="1;1;0;1" keyTimes="0;0.93;0.96;1" dur="4.5s" repeatCount="indefinite" />
+        </circle>
+        <circle cx="79" cy="48.4" r="2">
+          <animate attributeName="opacity" values="1;1;0;1" keyTimes="0;0.93;0.96;1" dur="4.5s" repeatCount="indefinite" />
+        </circle>
+        <circle cx="41.4" cy="54.4" r="1" opacity="0.8"/><circle cx="75.4" cy="54.4" r="1" opacity="0.8"/>
+      </g>
+    </g>
+
+    <!-- Нос, рот, веснушки -->
+    <path d="M60 69 V73" stroke="${c.nose}" stroke-width="1.4" stroke-linecap="round"/>
+    <path d="M60 73 C57 78 51 78 49 74 M60 73 C63 78 69 78 71 74" stroke="${c.nose}" stroke-width="1.7" fill="none" stroke-linecap="round"/>
+    <path d="M54 77.5 Q60 82 66 77.5 Q60 80 54 77.5 Z" fill="${c.inner}" opacity="0.75"/>
+    <path d="M54.5 66.5 C54.5 64.6 57 64 60 64 C63 64 65.5 64.6 65.5 66.5 C65.5 68.6 62.5 70.4 60 70.4 C57.5 70.4 54.5 68.6 54.5 66.5 Z" fill="${c.nose}"/>
+    <ellipse cx="58" cy="65.4" rx="2" ry="0.9" fill="#fff" opacity="0.6"/>
+    <g fill="${c.nose}" opacity="0.4">
+      <circle cx="47" cy="68" r="0.9"/><circle cx="43" cy="70" r="0.9"/><circle cx="46" cy="72.2" r="0.9"/>
+      <circle cx="73" cy="68" r="0.9"/><circle cx="77" cy="70" r="0.9"/><circle cx="74" cy="72.2" r="0.9"/>
+    </g>
+
+    <!-- Одежда поверх -->
+    ${clothing[outfit] || ""}
+    ${sparkles}
+  </svg>`;
+}
+
+</script>
+<script>
+const STORE_KEY = "tochka-rosta-v1";
+
+const defaultState = () => ({
+  role: null,
+  childName: "Миша",
+  coins: 40,
+  xp: 180,
+  skin: "sledik",
+  outfit: "none",
+  unlocked: ["sledik"],
+  unlockedClothes: ["none"],
+  badges: ["Первый шаг"],
+  streaks: { food: 3, measure: 4, quiz: 1 },
+  lastQuizDay: null,
+  quizDoneToday: false,
+  diary: [],
+  notes: [
+    { from: "Мама", text: "Горжусь, как ты сегодня всё записываешь!", at: Date.now() - 3600000 }
+  ],
+  cards: [],
+  challenges: CHALLENGE_TEMPLATES.slice(0, 3).map((t, i) => ({
+    id: "c" + i,
+    ...t,
+    status: i === 0 ? "active" : "active"
+  })),
+  helperTopics: []
+});
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORE_KEY);
+    if (!raw) return defaultState();
+    return { ...defaultState(), ...JSON.parse(raw) };
+  } catch {
+    return defaultState();
+  }
+}
+
+function saveState(state) {
+  try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch (e) {}
+}
+
+function todayKey() {
+  return new Date().toISOString().slice(0, 10);
+}
+
+function glucoseZone(value) {
+  if (value < 35) return { label: "низко", cls: "zone-danger" };
+  if (value > 70) return { label: "высоко", cls: "zone-danger" };
+  if (value < 42 || value > 62) return { label: "осторожно", cls: "zone-warn" };
+  return { label: "зелёная зона", cls: "zone-green" };
+}
+
+function activityScore(state) {
+  return (
+    state.xp +
+    state.streaks.food * 12 +
+    state.streaks.measure * 10 +
+    state.streaks.quiz * 15 +
+    state.diary.length * 8
+  );
+}
+
+</script>
+<script>
+const app = document.getElementById("app");
+let state = loadState();
+let route = state.role ? (state.role === "child" ? "child-home" : "parent-home") : state.registered ? "gate" : "register";
+let toastTimer = null;
+if (typeof state.mapDone !== "number") state.mapDone = 0;
+
+function systemDark() {
+  try { return !!(window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches); } catch (e) { return false; }
+}
+function currentTheme() {
+  return state.theme === "dark" || state.theme === "light" ? state.theme : systemDark() ? "dark" : "light";
+}
+function applyTheme() {
+  const t = currentTheme();
+  try {
+    document.documentElement.setAttribute("data-theme", t);
+    const m = document.querySelector('meta[name="theme-color"]');
+    if (m) m.setAttribute("content", t === "dark" ? "#1a2117" : "#3D4A34");
+  } catch (e) {}
+}
+function themeBtn() {
+  const dark = currentTheme() === "dark";
+  const label = dark ? "Включить светлую тему" : "Включить тёмную тему";
+  return `<button class="theme-btn" data-act="theme" aria-label="${label}" title="${label}">${dark ? "☀️" : "🌙"}</button>`;
+}
+applyTheme();
+
+const MAP_SECTIONS = [
+  { title: "Раздел 1 · Знакомство с этикетками", nodes: [
+    { type: "edible", icon: "🔎", name: "Детектив этикеток" },
+    { type: "quiz", icon: "❓", name: "Мини-квиз" },
+    { type: "trail", icon: "🥾", name: "Тропа Следика" },
+    { type: "chest", icon: "🎁", name: "Сундук" } ] },
+  { title: "Раздел 2 · Продукты и углеводы", nodes: [
+    { type: "edible", icon: "🍎", name: "Карточки продуктов" },
+    { type: "quiz", icon: "🧠", name: "Квиз: ГИ и ХЕ" },
+    { type: "trail", icon: "🧭", name: "Тропа: новые вопросы" },
+    { type: "chest", icon: "🎁", name: "Сундук" } ] },
+  { title: "Раздел 3 · Поддержка и привычки", nodes: [
+    { type: "quiz", icon: "🤝", name: "Квиз: кому сказать" },
+    { type: "edible", icon: "🛒", name: "Магазин-исследование" },
+    { type: "trail", icon: "⭐", name: "Финальная тропа" },
+    { type: "chest", icon: "🏆", name: "Главный приз" } ] }
+];
+const MAP_NODES = MAP_SECTIONS.flatMap((s) => s.nodes);
+
+function completeMapNode() {
+  if (game.fromMap && game.mapNode === state.mapDone && state.mapDone < MAP_NODES.length) {
+    state.mapDone += 1;
+    addXp(10, 5);
+    if (state.mapDone === MAP_NODES.length && !state.badges.includes("Путешественник")) state.badges.push("Путешественник");
+    commit();
+  }
+}
+
+function mapScreen() {
+  const dx = [0, 56, 84, 56, 0, -56, -84, -56];
+  let idx = 0;
+  const sections = MAP_SECTIONS.map((sec) => {
+    const rows = sec.nodes.map((n) => {
+      const i = idx++;
+      const st = i < state.mapDone ? "done" : i === state.mapDone ? "current" : "locked";
+      const label = st === "done" ? "✓" : st === "locked" ? "🔒" : n.icon;
+      return `<div class="map-row" style="--dx:${dx[i % dx.length]}px">
+        <button class="map-node ${st} ${n.type === "chest" ? "chest" : ""}" data-node="${i}" ${st === "locked" ? "disabled" : ""} aria-label="${n.name}">${label}</button>
+        <div class="map-name">${n.name}${st === "current" ? '<span class="map-start">СТАРТ</span>' : ""}</div>
+      </div>`;
+    }).join("");
+    return `<div class="map-section">${sec.title}</div>${rows}`;
+  }).join("");
+  const done = state.mapDone >= MAP_NODES.length;
+  return `${topBar()}
+  <div class="scroll">
+    <div class="hero" style="padding-bottom:12px">
+      ${mascotSvg(state.skin, getLevel(), state.outfit)}
+      <div class="badge">Пройдено ${state.mapDone} из ${MAP_NODES.length}</div>
+      <h1>Путь Следика</h1>
+      <p>${done ? "Ты прошёл всю карту! Можно повторять игры в любое время." : "Проходи уроки по порядку — каждый открывает следующий."}</p>
+    </div>
+    <div class="map">${sections}</div>
+  </div>
+  ${nav("child", "map")}`;
+}
+
+function onMapNode(i) {
+  const n = MAP_NODES[i];
+  if (!n || i > state.mapDone) return;
+  game.fromMap = true;
+  game.mapNode = i;
+  if (n.type === "chest") {
+    if (i === state.mapDone) {
+      addXp(20, 25);
+      praise(`Ты открыл «${n.name}» на карте! Так держать!`, true);
+      completeMapNode();
+    }
+    game.fromMap = false;
+    return render();
+  }
+  if (n.type === "edible") { game.edible = { i: 0, score: 0, feedback: "" }; return go("edible"); }
+  if (n.type === "quiz") { game.quiz = { i: 0, picked: [], chosen: null, score: 0 }; return go("quiz"); }
+  if (n.type === "trail") { newTrail(); return go("trail"); }
+}
+
+const game = {
+  edible: { i: 0, glucose: 50, score: 0, keys: false, log: [] },
+  trail: { qs: [], i: 0, hearts: 3, score: 0, correct: 0, chosen: null, done: false, won: false },
+  quiz: { i: 0, picked: [], chosen: null },
+  fromMap: false,
+  mapNode: null
+};
+
+function go(next) {
+  route = next;
+  render();
+}
+
+function commit() {
+  saveState(state);
+}
+
+function praise(text, isPostcard = false) {
+  if (isPostcard) {
+    state.cards.unshift({ text, at: Date.now(), id: "card-" + Date.now() });
+    state.cards = state.cards.slice(0, 12);
+  } else {
+    // Обычная похвала в дневнике
+    state.diary.unshift({ type: "похвала", label: text, at: Date.now() });
+  }
+  commit();
+}
+
+function addXp(n, coins = 0) {
+  state.xp += n;
+  state.coins += coins;
+  commit();
+}
+
+function nav(role, active) {
+  const items =
+    role === "child"
+      ? [
+          ["child-home", "🏠", "Дом"],
+          ["map", "🗺️", "Путь"],
+          ["games", "🎮", "Игры"],
+          ["chat", "🦊", "Следик"],
+          ["profile", "⭐", "Я"]
+        ]
+      : [
+          ["parent-home", "🏠", "Дом"],
+          ["parent-child", "📈", "Треки"],
+          ["parent-challenges", "🎯", "Челленджи"],
+          ["parent-notes", "💌", "Слова"],
+          ["parent-help", "📘", "Справка"]
+        ];
+  return `<nav class="nav">${items
+    .map(
+      ([id, ico, label]) =>
+        `<button class="${active === id ? "on" : ""}" data-go="${id}"><span class="ico">${ico}</span>${label}</button>`
+    )
+    .join("")}</nav>`;
+}
+
+function topBar(extra = "") {
+  return `<div class="top">
+    <div class="brand">Точка Роста</div>
+    <div class="row" style="align-items:center">
+      <div class="chip">🪙 ${state.coins} · 🔥 ${Math.max(state.streaks.food, state.streaks.measure, state.streaks.quiz)}</div>
+      ${themeBtn()}
+    </div>
+  </div>${extra}`;
+}
+
+function gateScreen() {
+  return `<div class="role-wrap">
+    <div style="align-self:flex-end">${themeBtn()}</div>
+    <div class="tiny">семейное приложение · не медицинский прибор</div>
+    <h1 style="font-size:34px;line-height:1.05">Точка Роста</h1>
+    <p style="color:var(--muted);font-weight:700">Контроль диабета как забота и игра, без стыда за цифры сахара.</p>
+    ${mascotSvg("sledik", 0, "none")}
+    <button class="role-card" data-role="child">
+      <div class="badge">ребёнок</div>
+      <h2>Дружелюбный Следик</h2>
+      <p>Простые слова, стрики, мини-игры и тёплые записки.</p>
+      <span class="btn btn-primary">Войти как ребёнок</span>
+    </button>
+    <button class="role-card" data-role="parent">
+      <div class="badge">родитель</div>
+      <h2>Режим сопровождения</h2>
+      <p>ГИ, ХЕ, челленджи, поддержка и подсказки, что закрепить в игре.</p>
+      <span class="btn btn-leaf">Войти как родитель</span>
+    </button>
+  </div>`;
+}
+
+function getLevel() {
+  return Math.floor(activityScore(state) / 100);
+}
+
+function childHome() {
+  const lastNote = state.notes[0];
+  const level = getLevel();
+  return `${topBar()}
+  <div class="scroll">
+    <div class="hero">
+      ${mascotSvg(state.skin, level, state.outfit)}
+      <div class="badge">Уровень ${level} · ${state.childName}</div>
+      <h1>Ты растёшь в своём темпе!</h1>
+      <p>Следик рядом: учимся, играем и поддерживаем друг друга — без оценок за здоровье.</p>
+    </div>
+    <div class="grid-3">
+      <div class="stat streak-fire"><b>🔥 ${state.streaks.food}</b><span>сканы еды</span></div>
+      <div class="stat streak-star"><b>⭐ ${state.streaks.measure}</b><span>замеры</span></div>
+      <div class="stat streak-quiz"><b>❓ ${state.streaks.quiz}</b><span>квизы</span></div>
+    </div>
+    <div class="card">
+      <h3>Дневник заботы</h3>
+      <p class="tiny">Это тренировка привычки, не оценка здоровья.</p>
+      <div class="row" style="margin-top:10px">
+        <button class="btn btn-leaf" data-act="scan">📷 Сканировать еду</button>
+        <button class="btn btn-ghost" data-act="measure">Я измерил сахар</button>
+      </div>
+      <button class="btn btn-ghost sm" data-act="scan-nophoto" style="margin-top:8px">Записать еду без фото</button>
+      ${mealsStatusHtml()}
+    </div>
+    ${childMealsHtml()}
+    ${
+      state.cards.length > 0
+        ? `<h3>Твои открытки</h3>
+           <div class="h-scroll" style="margin-bottom:12px">
+             ${state.cards.map(c => `<div class="postcard">
+               <div class="tiny">от Следика</div>
+               <p>${c.text}</p>
+             </div>`).join("")}
+           </div>`
+        : ""
+    }
+    ${
+      lastNote
+        ? `<div class="note-card"><div class="tiny">${lastNote.from}</div><b>${lastNote.text}</b></div>`
+        : ""
+    }
+    <button class="btn btn-leaf" data-go="map">🗺️ Продолжить путь</button>
+    <button class="btn btn-gold" data-go="games" style="margin-top:8px">Мини-игры и квиз</button>
+    <button class="btn btn-ghost" data-go="challenges" style="margin-top:8px">🎯 Квесты от родителей</button>
+  </div>
+  ${nav("child", "child-home")}`;
+}
+
+function gamesHub() {
+  return `${topBar()}
+  <div class="scroll">
+    <h2>Играем и учимся</h2>
+    <p class="tiny" style="margin:6px 0 12px">Игры — только для знакомства с темой. Они не оценивают и не предсказывают уровень глюкозы.</p>
+    <div class="card">
+      <h3>🔎 Детектив этикеток</h3>
+      <p class="tiny">Узнай продукт и найди подсказку о его составе. Здесь нет правильной еды и неправильной еды.</p>
+      <button class="btn btn-coral" data-go="edible" style="margin-top:10px">Играть</button>
+    </div>
+    <div class="card">
+      <h3>🥾 Тропа Следика</h3>
+      <p class="tiny">Отвечай на вопросы — Следик идёт дальше по тропе. Каждый раз новые вопросы в другом порядке: правда или миф, выбор ответа. Три сердечка на ошибки.</p>
+      <button class="btn btn-leaf" data-go="trail" style="margin-top:10px">Играть</button>
+    </div>
+    <div class="card">
+      <h3>❓ Ежедневный квиз</h3>
+      <p class="tiny">Короткие вопросы о диабете, этикетках и поддержке — без медицинских назначений.</p>
+      <button class="btn btn-gold" data-go="quiz">${state.quizDoneToday ? "Повторить для себя" : "Пройти сегодня"}</button>
+    </div>
+  </div>
+  ${nav("child", "games")}`;
+}
+
+const EDIBLE_OPTIONS = {
+  label: "Найти состав и пищевую ценность на этикетке",
+  guess: "Угадать по цвету упаковки",
+  skip: "Спросить Следика, сколько лекарства принять"
+};
+
+function edibleOrder(g) {
+  if (!g.order || g.orderFor !== g.i) {
+    g.order = shuffle(Object.keys(EDIBLE_OPTIONS));
+    g.orderFor = g.i;
+  }
+  return g.order;
+}
+
+function edibleScreen() {
+  const g = game.edible;
+  const food = FOODS[g.i % FOODS.length];
+  return `<div class="top"><button class="back" data-go="games">← Игры</button><b>Карточка ${g.i + 1}/8</b></div>
+  <div class="scroll">
+    <div class="food-card">
+      <div class="food-emoji">${food.emoji}</div>
+      <h2>${food.name}</h2>
+      <div class="badge">Гликемический индекс: ${food.gi}</div>
+      <p class="tiny" style="margin-top:8px">${food.tip}</p>
+    </div>
+    <div class="card">
+      <h3>Задание детектива</h3>
+      <p>Как узнать больше именно об этом продукте?</p>
+      ${edibleOrder(g).map((k, n) => {
+        let cls = "quiz-opt";
+        if (g.feedback) cls += k === "label" ? " ok" : k === g.chosen ? " bad" : "";
+        return `<button class="${cls}" data-edible="${k}"${g.feedback ? " disabled" : ""}${n === 0 ? ' style="margin-top:10px"' : ""}>${EDIBLE_OPTIONS[k]}</button>`;
+      }).join("")}
+      ${g.feedback ? `<div class="warn-box" role="status">${g.feedback}</div><button class="btn btn-leaf" data-edible="next" style="margin-top:10px">${g.i >= 7 ? "Завершить" : "Дальше"}</button>` : ""}
+      <p class="tiny" style="margin-top:10px">Очки детектива: ${g.score}</p>
+    </div>
+  </div>`;
+}
+
+function trailScreen() {
+  const g = game.trail;
+  const hearts = [0, 1, 2].map((k) => (k < g.hearts ? "🧡" : "🤍")).join("");
+  const back = `<button class="back" data-go="${game.fromMap ? "map" : "games"}">← ${game.fromMap ? "Путь" : "Игры"}</button>`;
+  if (g.done) {
+    return `<div class="top">${back}<b>Тропа Следика</b></div>
+    <div class="scroll">
+      <div class="hero">
+        <h1>${g.won ? "Тропа пройдена! 🎉" : "Следик устал, давай ещё раз 🌿"}</h1>
+        <p>Верных ответов: ${g.correct} из ${g.qs.length} · очки ${g.score}.<br>${g.won ? "Отличная работа — ты растёшь в своём темпе!" : "Ошибаться нормально: так мы и учимся. В новой попытке будут другие вопросы."}</p>
+      </div>
+      <button class="btn btn-coral" data-act="trail-restart">Новая тропа</button>
+      <button class="btn btn-ghost" data-go="${game.fromMap ? "map" : "games"}" style="margin-top:8px">${game.fromMap ? "Назад на карту" : "К играм"}</button>
+    </div>`;
+  }
+  const item = g.qs[g.i];
+  const path = g.qs.map((_, k) => `<span class="trail-dot ${k < g.i ? "past" : k === g.i ? "now" : ""}">${k < g.i ? "✓" : k === g.i ? "🦊" : "•"}</span>`).join("");
+  return `<div class="top">${back}<b>${hearts}</b></div>
+  <div class="scroll">
+    <div class="trail-path">${path}</div>
+    <div class="card"><div class="tiny">Вопрос ${g.i + 1} из ${g.qs.length} · очки ${g.score}</div><h2 style="margin-top:6px">${item.q}</h2></div>
+    ${item.opts.map((o, idx) => {
+      let cls = "quiz-opt";
+      if (g.chosen != null) {
+        if (o.ok) cls += " ok";
+        else if (idx === g.chosen) cls += " bad";
+      }
+      return `<button class="${cls}" data-trail="${idx}">${o.t}</button>`;
+    }).join("")}
+    ${g.chosen != null ? `<p class="tiny" style="margin:6px 0 10px">${item.opts[g.chosen].ok ? "Верно! " : "Не совсем. "}${item.why}</p><button class="btn btn-leaf" data-act="trail-next">Дальше</button>` : ""}
+  </div>`;
+}
+
+function quizScreen() {
+  const q = game.quiz;
+  if (!q.picked.length) {
+    q.picked = [...QUIZ].sort(() => Math.random() - 0.5).slice(0, 3);
+    q.i = 0;
+    q.chosen = null;
+    q.score = 0;
+  }
+  if (q.i >= q.picked.length) {
+    return `<div class="top"><button class="back" data-go="games">← Игры</button><b>Квиз</b></div>
+    <div class="scroll">
+      <div class="hero"><h1>Ты закрепил ${q.score} из ${q.picked.length}</h1><p>Рейтинг растёт за обучение, не за сахар.</p></div>
+      <button class="btn btn-primary" data-go="${game.fromMap ? "map" : "games"}">Дальше</button>
+    </div>`;
+  }
+  const item = q.picked[q.i];
+  return `<div class="top"><button class="back" data-go="games">← Игры</button><b>Вопрос ${q.i + 1}/3</b></div>
+  <div class="scroll">
+    <div class="card"><h2>${item.q}</h2></div>
+    ${item.options
+      .map((opt, idx) => {
+        let cls = "quiz-opt";
+        if (q.chosen != null) {
+          if (idx === item.a) cls += " ok";
+          else if (idx === q.chosen) cls += " bad";
+        }
+        return `<button class="${cls}" data-quiz="${idx}">${opt}</button>`;
+      })
+      .join("")}
+    ${q.chosen != null ? `<p class="tiny">${item.why}</p><button class="btn btn-leaf" data-act="quiz-next">Дальше</button>` : ""}
+  </div>`;
+}
+
+function challengesScreen() {
+  return `${topBar()}
+  <div class="scroll">
+    <h2>Челленджи от родителей</h2>
+    <p class="tiny" style="margin:6px 0 12px">Можно выполнять вместе, а можно попросить заменить задание. Любой семейный бонус — по договорённости, без условий о показателях здоровья.</p>
+    ${state.challenges
+      .map(
+        (c) => `<div class="card challenge">
+        <div class="mark">${c.emoji}</div>
+        <div>
+          <h3>${c.title}</h3>
+          <p class="tiny">${c.hint}</p>
+          <p class="tiny">награда: ${c.xp} монет · статус: ${labelStatus(c.status)}</p>
+          ${c.bonus ? `<p class="tiny">Семейный бонус: ${escapeHtml(c.bonus)}</p>` : ""}
+          ${
+            c.status === "active"
+              ? `<button class="btn btn-primary sm" data-done="${c.id}" style="margin-top:8px">Попросить подтвердить</button>`
+              : ""
+          }
+        </div>
+      </div>`
+      )
+      .join("")}
+    <div class="warn-box">Родитель подтверждает выполнение у себя. Можно добавить семейный бонус: кино, игра, прогулка.</div>
+  </div>
+  ${nav("child", "challenges")}`;
+}
+
+function labelStatus(s) {
+  return { active: "в работе", wait: "ждёт маму/папу", done: "готово 🎉" }[s] || s;
+}
+
+function chatScreen() {
+  if (!state.chat) {
+    state.chat = [
+      {
+        who: "bot",
+        text: `Привет, ${state.childName}! Я Следик — игровой помощник. Я могу поддержать и объяснить слова простым языком, но не заменяю взрослого, врача или ваш семейный план.`
+      }
+    ];
+  }
+  return `${topBar()}
+  <div class="scroll">
+    <div class="chat-log">
+      ${state.chat
+        .map((m) => `<div class="bubble ${m.who === "bot" ? "bot" : "me"}">${escapeHtml(m.text)}</div>`)
+        .join("")}
+    </div>
+    <div class="quick">
+      <button data-ask="зачем мерить">Зачем бывают измерения?</button>
+      <button data-ask="подождать перед едой">Почему у семьи есть правила?</button>
+      <button data-ask="еда">Как читать этикетку?</button>
+      <button data-ask="если плохо">Мне тревожно</button>
+    </div>
+    <div class="warn-box">Следик — игровой помощник, а не врач. При вопросах о самочувствии сразу обратись к взрослому.</div>
+    <form class="composer" id="chat-form">
+      <input name="q" placeholder="Спросить Следика..." autocomplete="off" />
+      <button class="btn btn-primary sm" type="submit">Ок</button>
+    </form>
+  </div>
+  ${nav("child", "chat")}`;
+}
+
+function profileScreen() {
+  const xp = activityScore(state);
+  const level = getLevel();
+  const board = LEADERBOARD.map((p) => (p.you ? { ...p, xp, name: state.childName } : p)).sort((a, b) => b.xp - a.xp);
+  return `${topBar()}
+  <div class="scroll">
+    <div class="hero">${mascotSvg(state.skin, level, state.outfit)}<h1>Рейтинг заботы</h1><p>Только активность и учёба. Сахар сюда не попадает.</p></div>
+    <div class="card">
+      ${board
+        .map(
+          (p, i) => `<div class="rank-row">
+          <b>${i + 1}</b><div class="avatar">${p.emoji}</div>
+          <div style="flex:1">${p.name}${p.you ? " (ты)" : ""}<div class="tiny">${p.xp} очков привычек</div></div>
+        </div>`
+        )
+        .join("")}
+    </div>
+    
+    <h3>Гардероб Следика</h3>
+    <div class="h-scroll" style="margin-top:8px">
+      ${CLOTHES.map(
+        (c) => `<button class="skin ${state.unlockedClothes.includes(c.id) ? "" : (level < c.level ? "locked" : "")}" data-outfit="${c.id}">
+        <div style="font-size:28px">${c.emoji}</div>
+        <b>${c.name}</b>
+        <div class="tiny">${state.unlockedClothes.includes(c.id) ? (state.outfit === c.id ? "надето" : "надеть") : (level < c.level ? "уров. " + c.level : c.cost + " монет")}</div>
+      </button>`
+      ).join("")}
+    </div>
+
+    <h3 style="margin-top:16px">Скины Следика</h3>
+    <div class="grid-2" style="margin-top:8px">
+      ${SKINS.map(
+        (s) => `<button class="skin ${state.unlocked.includes(s.id) ? "" : "locked"}" data-skin="${s.id}">
+        <div style="font-size:28px">${s.emoji}</div>
+        <b>${s.name}</b>
+        <div class="tiny">${state.unlocked.includes(s.id) ? (state.skin === s.id ? "выбрано" : "выбрать") : s.cost + " монет"}</div>
+      </button>`
+      ).join("")}
+    </div>
+    <div class="card" style="margin-top:12px">
+      <h3>Значки</h3>
+      <div class="h-scroll">${state.badges.map((b) => `<div class="pill">🏅 ${b}</div>`).join("")}</div>
+    </div>
+    <button class="btn btn-ghost" data-act="switch">Сменить роль</button>
+  </div>
+  ${nav("child", "profile")}`;
+}
+
+function parentHome() {
+  const topics = suggestTopics();
+  return `${topBar()}
+  <div class="scroll">
+    <div class="hero">
+      <h1>Рядом с ${state.childName}</h1>
+      <p>Сводка по заботе, не таблица вины. Сахар не ранжируется.</p>
+    </div>
+    <div class="grid-3">
+      <div class="stat"><b>${activityScore(state)}</b><span>очки заботы</span></div>
+      <div class="stat"><b>${state.streaks.measure}</b><span>серия замеров</span></div>
+      <div class="stat"><b>${state.notes.length}</b><span>записки</span></div>
+    </div>
+    ${parentMealsHtml()}
+    <div class="card">
+      <h3>Что закрепить в игре</h3>
+      ${topics.map((t) => `<div class="list-item"><span>${t}</span></div>`).join("")}
+    </div>
+    <div class="warn-box">Это учебный прототип. Решения по дозам и лечению — только с врачом.</div>
+  </div>
+  ${nav("parent", "parent-home")}`;
+}
+
+function suggestTopics() {
+  const out = [];
+  if (state.streaks.quiz < 3) out.push("Квиз: что делать при лёгкой гипогликемии");
+  if (state.diary.filter((d) => d.type === "food").length < 5) out.push("Игра: низкий ГИ в магазине");
+  if (state.streaks.measure >= 3) out.push("Похвалить серию замеров — привычка держится");
+  out.push("Прогулка после обеда: как мышцы тратят глюкозу");
+  return out.slice(0, 3);
+}
+
+function parentChild() {
+  return `${topBar()}
+  <div class="scroll">
+    <h2>Треки привычек</h2>
+    <div class="card">
+      <div class="list-item"><span>Сканы еды</span><b>🔥 ${state.streaks.food}</b></div>
+      <div class="list-item"><span>Замеры</span><b>💧 ${state.streaks.measure}</b></div>
+      <div class="list-item"><span>Квизы</span><b>❓ ${state.streaks.quiz}</b></div>
+      <div class="list-item"><span>Записи дневника</span><b>${state.diary.length}</b></div>
+    </div>
+    <h3>Последние действия</h3>
+    ${
+      state.diary.length
+        ? state.diary
+            .slice(0, 8)
+            .map((d) => `<div class="list-item"><span>${d.label}</span><span class="tiny">${d.type}</span></div>`)
+            .join("")
+        : `<p class="tiny">Пока пусто — ребёнок ещё не сканировал день.</p>`
+    }
+  </div>
+  ${nav("parent", "parent-child")}`;
+}
+
+function parentChallenges() {
+  return `${topBar()}
+  <div class="scroll">
+    <h2>Челленджи</h2>
+    ${state.challenges
+      .map(
+        (c) => `<div class="card">
+        <h3>${c.emoji} ${c.title}</h3>
+        <p class="tiny">${labelStatus(c.status)} · ${c.xp} монет ребёнку</p>
+        ${c.bonus ? `<p class="tiny">Семейный бонус: ${escapeHtml(c.bonus)}</p>` : ""}
+        ${
+          c.status === "wait"
+            ? `<button class="btn btn-leaf" data-confirm="${c.id}" style="margin-top:8px">Подтвердить</button>`
+            : ""
+        }
+      </div>`
+      )
+      .join("")}
+    <h3>Новое задание</h3>
+    <div class="card">
+      <h3>Добавить семейный бонус</h3>
+      <input class="field" id="family-bonus" maxlength="80" placeholder="Например: выбрать настольную игру" />
+      <p class="tiny" style="margin-top:6px">Бонус — добровольный семейный подарок, не награда за медицинские показатели.</p>
+    </div>
+    ${CHALLENGE_TEMPLATES.map(
+      (t) =>
+        `<button class="btn btn-ghost" data-add="${t.title}" style="margin-bottom:8px">${t.emoji} ${t.title}</button>`
+    ).join("")}
+  </div>
+  ${nav("parent", "parent-challenges")}`;
+}
+
+function parentNotes() {
+  return `${topBar()}
+  <div class="scroll">
+    <h2>Поддерживающие слова</h2>
+    <form id="note-form">
+      <input class="field" name="text" placeholder="Ты отлично справляешься!" />
+      <button class="btn btn-coral" style="margin-top:8px" type="submit">Отправить записку</button>
+    </form>
+    <div class="quick">
+      <button data-preset="Горжусь тобой!">Горжусь тобой</button>
+      <button data-preset="Ты отлично справляешься!">Отлично справляешься</button>
+      <button data-preset="Давай вечером сыграем вместе.">Семейный бонус</button>
+    </div>
+    ${state.notes
+      .map((n) => `<div class="note-card"><div class="tiny">${escapeHtml(n.from)}</div><p>${escapeHtml(n.text)}</p></div>`)
+      .join("")}
+  </div>
+  ${nav("parent", "parent-notes")}`;
+}
+
+function parentHelp() {
+  return `${topBar()}
+  <div class="scroll">
+    <h2>Справка для взрослых</h2>
+    <div class="card">
+      <h3>Хлебные единицы</h3>
+      <p class="tiny">ХЕ — условный способ учитывать углеводы. Значения и правила подсчёта могут зависеть от принятой вашим специалистом системы. Этот пример не рассчитывает лечение или дозы.</p>
+      <form id="xe-form" style="margin-top:8px">
+        <div class="grid-2">
+          <input class="field" name="per100" type="number" min="0" step="0.1" inputmode="decimal" placeholder="углеводы на 100 г" />
+          <input class="field" name="weight" type="number" min="0" step="1" inputmode="decimal" placeholder="вес порции, г" />
+        </div>
+        <div class="row" style="margin-top:8px">
+          <select class="field" name="unit">
+            <option value="12">1 ХЕ = 12 г углеводов</option>
+            <option value="10">1 ХЕ = 10 г углеводов</option>
+          </select>
+          <button class="btn btn-primary sm" type="submit">Посчитать</button>
+        </div>
+      </form>
+      <div id="xe-out" class="tiny" style="margin-top:8px"></div>
+    </div>
+    <div class="card">
+      <h3>Гликемический индекс</h3>
+      ${GI_TABLE.map((r) => `<div class="list-item"><span>${r.name}</span><b>ГИ ${r.gi}</b></div>`).join("")}
+    </div>
+    <div class="card">
+      <h3>Если изменилось самочувствие</h3>
+      <p class="tiny">Приложение не определяет симптомы и не подсказывает лечение. Следуйте индивидуальному плану, который составлен с медицинской командой. При тревожных симптомах обратитесь к ответственному взрослому и действуйте по этому плану; при экстренной ситуации вызовите местную экстренную службу.</p>
+    </div>
+    <div class="card">
+      <h3>Физическая активность</h3>
+      <p class="tiny">Реакция на активность индивидуальна. Приложение не оценивает готовность к нагрузке и не задаёт перекусы или изменения лечения. Следуйте личным рекомендациям медицинской команды.</p>
+    </div>
+    <div class="card">
+      <h3>Гликемический индекс</h3>
+      <p class="tiny">ГИ — один из способов описывать углеводсодержащие продукты. Он не показывает количество углеводов в порции, не делает еду «хорошей» или «плохой» и не определяет лечение.</p>
+    </div>
+    <button class="btn btn-ghost" data-act="switch">Сменить роль</button>
+  </div>
+  ${nav("parent", "parent-help")}`;
+}
+
+function answerChild(q) {
+  const t = q.toLowerCase();
+
+  if (t.includes("плохо") || t.includes("страшно") || t.includes("болит") || t.includes("помоги") || t.includes("срочно") || t.includes("гипо") || t.includes("гипер") || t.includes("низк") || t.includes("высок") || (t.includes("мало") && t.includes("сахар")))
+    return "Я не подсказываю, как лечить изменения сахара. Если тебе плохо, страшно или ты заметил непривычные симптомы — сразу скажи взрослому рядом и следуйте вашему семейному плану. Если рядом нет взрослого или нужна срочная помощь, обратись к другому надёжному взрослому или в экстренную службу.";
+
+  if (t.includes("зачем") && (t.includes("мери") || t.includes("замер") || t.includes("сахар")))
+    return "Измерение — как посмотреть на карту в путешествии: оно даёт информацию тебе и взрослому, который рядом. Цифра не оценка и не говорит, хороший ты или плохой. Следуй семейному плану, а если не уверен — спроси взрослого.";
+
+  if (t.includes("почему") && (t.includes("подожд") || t.includes("пауз")))
+    return "У разных семей бывают разные договорённости перед едой. Я не знаю твой личный план — спроси маму, папу или другого взрослого, который помогает тебе.";
+
+  if (t.includes("гипо") || t.includes("гипер") || t.includes("низк") || t.includes("высок") || t.includes("плохо") || (t.includes("мало") && t.includes("сахар")))
+    return "Я не подсказываю, как лечить изменения сахара. Если тебе плохо, страшно или ты заметил непривычные симптомы — сразу скажи взрослому рядом и следуйте вашему семейному плану. Если рядом нет взрослого или нужна срочная помощь, обратись к другому надёжному взрослому или в экстренную службу.";
+
+  if (t.includes("инсулин") || t.includes("лекарств") || t.includes("доз") || t.includes("ключ"))
+    return "Инсулин и другие лекарства — важная часть личного плана лечения. Только взрослый и медицинская команда могут объяснить, что подходит именно тебе. Я не рассчитываю дозы и не подсказываю, когда принимать лекарство.";
+
+  if (t.includes("спорт") || t.includes("бег") || t.includes("гуля") || t.includes("шаг"))
+    return "Движение может по-разному влиять на разных людей. Можно выбрать весёлую прогулку вместе со взрослым, а планы активности обсуждать с семьёй и медицинской командой.";
+
+  if (t.includes("еда") || t.includes("кушать") || t.includes("вкусн") || t.includes("продукт"))
+    return "Еда бывает самой разной, и нет продуктов, которые делают тебя хорошим или плохим. Если хочется узнать состав, изучи этикетку вместе со взрослым. Я не назначаю питание и не оцениваю продукты.";
+
+  if (t.includes("привет") || t.includes("здравствуй") || t.includes("кто ты"))
+    return `Привет, ${state.childName}! Я Следик — дружелюбный помощник для игр и вопросов. Я могу помочь разобраться со словами и поддержать, но не заменяю взрослого, врача или ваш семейный план. О чём хочешь узнать?`;
+
+  return "Хороший вопрос! Я могу рассказать про этикетки, слова о диабете и наши игры. Я не даю медицинских советов, не подбираю еду для лечения и не рассчитываю лекарства. Если вопрос о самочувствии или лечении — поговори со взрослым и следуйте вашему плану.";
+}
+
+function registerScreen() {
+  return `<div class="role-wrap">
+    <div style="align-self:flex-end">${themeBtn()}</div>
+    <div class="tiny">шаг 1 из 2 · знакомство</div>
+    <h1 style="font-size:32px;line-height:1.05">Давай знакомиться!</h1>
+    <p style="color:var(--muted);font-weight:700">Следик хочет знать, как тебя зовут и сколько тебе лет. Взрослые могут помочь заполнить.</p>
+    ${mascotSvg("sledik", 0, "none")}
+    <form id="reg-form" class="role-card" novalidate>
+      <label class="reg-label" for="reg-name">Имя</label>
+      <input class="field" id="reg-name" name="name" type="text" maxlength="20" autocomplete="given-name" placeholder="Например, Миша" value="${state.registered ? escapeHtml(state.childName) : ""}" />
+      <label class="reg-label" for="reg-age">Возраст</label>
+      <input class="field" id="reg-age" name="age" type="number" min="4" max="18" inputmode="numeric" placeholder="Например, 10" value="${state.registered && state.age ? state.age : ""}" />
+      <div id="reg-err" class="reg-err" role="alert"></div>
+      <button class="btn btn-primary" type="submit">Продолжить</button>
+    </form>
+    <p class="tiny" style="text-align:center">Данные хранятся только в этом браузере.</p>
+  </div>`;
+}
+
+function screens() {
+  const map = {
+    register: registerScreen,
+    gate: gateScreen,
+    "child-home": childHome,
+    map: mapScreen,
+    games: gamesHub,
+    edible: edibleScreen,
+    trail: trailScreen,
+    quiz: quizScreen,
+    challenges: challengesScreen,
+    chat: chatScreen,
+    profile: profileScreen,
+    "parent-home": parentHome,
+    "parent-child": parentChild,
+    "parent-challenges": parentChallenges,
+    "parent-notes": parentNotes,
+    "parent-help": parentHelp
+  };
+  return (map[route] || gateScreen)();
+}
+
+function escapeHtml(value) {
+  return String(value).replace(/[&<>"']/g, (char) => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;"
+  })[char]);
+}
+
+function render() {
+  app.innerHTML = screens();
+}
+
+function closestAttr(el, name) {
+  const node = el && el.closest ? el.closest("[" + name + "]") : null;
+  return node && app.contains(node) ? node.getAttribute(name) : null;
+}
+
+app.addEventListener("click", (e) => {
+  const role = closestAttr(e.target, "data-role");
+  if (role) {
+    state.role = role;
+    state.registered = true;
+    commit();
+    go(role === "child" ? "child-home" : "parent-home");
+    return;
+  }
+  const nodeIdx = closestAttr(e.target, "data-node");
+  if (nodeIdx != null) return onMapNode(+nodeIdx);
+  const next = closestAttr(e.target, "data-go");
+  if (next) {
+    game.fromMap = false;
+    if (next === "edible") game.edible = { i: 0, score: 0, feedback: "" };
+    if (next === "trail") newTrail();
+    if (next === "quiz") game.quiz = { i: 0, picked: [], chosen: null, score: 0 };
+    go(next);
+    return;
+  }
+  const delMeal = closestAttr(e.target, "data-meal-del");
+  if (delMeal) return deleteMeal(delMeal);
+  const act = closestAttr(e.target, "data-act");
+  if (act) return onAct(act);
+  const edible = closestAttr(e.target, "data-edible");
+  if (edible) return onEdible(edible);
+  const tr = closestAttr(e.target, "data-trail");
+  if (tr != null) return onTrail(+tr);
+  const quiz = closestAttr(e.target, "data-quiz");
+  if (quiz != null) return onQuiz(+quiz);
+  const done = closestAttr(e.target, "data-done");
+  if (done) {
+    const c = state.challenges.find((x) => x.id === done);
+    if (c && c.status === "active") {
+      c.status = "wait";
+      commit();
+      render();
+    }
+    return;
+  }
+  const confirmId = closestAttr(e.target, "data-confirm");
+  if (confirmId) {
+    const c = state.challenges.find((x) => x.id === confirmId);
+    if (c) {
+      c.status = "done";
+      addXp(20, c.xp);
+      if (!state.badges.includes("Команда")) state.badges.push("Команда");
+      praise("Челлендж выполнен. Вы команда!");
+      commit();
+      render();
+    }
+    return;
+  }
+  const addTitle = closestAttr(e.target, "data-add");
+  if (addTitle) {
+    const t = CHALLENGE_TEMPLATES.find((x) => x.title === addTitle);
+    const bonus = app.querySelector("#family-bonus")?.value.trim().slice(0, 80) || "";
+    state.challenges.unshift({ id: "c" + Date.now(), ...t, bonus, status: "active" });
+    commit();
+    render();
+    return;
+  }
+  const ask = closestAttr(e.target, "data-ask");
+  if (ask) return sendChat(ask);
+  const skin = closestAttr(e.target, "data-skin");
+  if (skin) return buySkin(skin);
+  const outfit = closestAttr(e.target, "data-outfit");
+  if (outfit) return buyOutfit(outfit);
+  const preset = closestAttr(e.target, "data-preset");
+  if (preset) return sendNote(preset);
+});
+
+app.addEventListener("submit", (e) => {
+  const mealId = e.target && e.target.getAttribute ? e.target.getAttribute("data-meal-form") : null;
+  if (mealId) {
+    e.preventDefault();
+    const text = String(new FormData(e.target).get("text") || "").trim().slice(0, 200);
+    if (text) commentMeal(mealId, text);
+    return;
+  }
+  if (e.target && e.target.id === "chat-form") {
+    e.preventDefault();
+    const q = new FormData(e.target).get("q");
+    if (q) sendChat(String(q));
+  }
+  if (e.target && e.target.id === "note-form") {
+    e.preventDefault();
+    const text = new FormData(e.target).get("text");
+    if (text) sendNote(String(text));
+  }
+  if (e.target && e.target.id === "reg-form") {
+    e.preventDefault();
+    const fd = new FormData(e.target);
+    const name = String(fd.get("name") || "").replace(/<[^>]*>/g, "").replace(/[<>&"'`]/g, "").replace(/\s+/g, " ").trim().slice(0, 20);
+    const age = parseInt(String(fd.get("age")), 10);
+    const err = app.querySelector("#reg-err");
+    if (!name) {
+      if (err) err.textContent = "Напиши, как тебя зовут.";
+      return;
+    }
+    if (!Number.isInteger(age) || age < 4 || age > 18) {
+      if (err) err.textContent = "Возраст — число от 4 до 18.";
+      return;
+    }
+    state.childName = name;
+    state.age = age;
+    state.registered = true;
+    commit();
+    go("gate");
+    return;
+  }
+  if (e.target && e.target.id === "xe-form") {
+    e.preventDefault();
+    const fd = new FormData(e.target);
+    const per100 = parseFloat(String(fd.get("per100")).replace(",", "."));
+    const weight = parseFloat(String(fd.get("weight")).replace(",", "."));
+    const unit = Number(fd.get("unit")) || 12;
+    const out = app.querySelector("#xe-out");
+    if (out) {
+      if (!Number.isFinite(per100) || !Number.isFinite(weight) || per100 < 0 || weight < 0) {
+        out.textContent = "Введите углеводы на 100 г (из таблицы пищевой ценности) и вес порции — неотрицательные числа.";
+      } else {
+        const carbs = (per100 * weight) / 100;
+        const xe = carbs / unit;
+        const f = (n) => n.toLocaleString("ru-RU", { maximumFractionDigits: 1 });
+        out.textContent = `В порции ${f(weight)} г примерно ${f(carbs)} г углеводов ≈ ${f(xe)} ХЕ (1 ХЕ = ${unit} г). Это справочный пересчёт, а не доза: решения о лечении принимайте по плану вашей медицинской команды.`;
+      }
+    }
+  }
+});
+
+function onAct(act) {
+  if (act === "scan") {
+    pickMealPhoto();
+    return;
+  }
+  if (act === "scan-nophoto" || act === "scan-photo") {
+    state.streaks.food += 1;
+    state.diary.unshift({ type: "еда", label: takeScanLabel() });
+    addXp(8, 5);
+    praise("Ты заметил еду и записал. Так питание становится понятнее.");
+    if (state.streaks.food % 5 === 0) {
+      praise(`Ого! Серия из ${state.streaks.food} сканов еды! Ты настоящий исследователь питания!`, true);
+    }
+    render();
+  }
+  if (act === "measure") {
+    state.streaks.measure += 1;
+    state.diary.unshift({ type: "замер", label: "Замер отмечен (без оценки цифры)" });
+    addXp(8, 5);
+    praise("Смелость посмотреть на уровень глюкозы. Цифра не ставит тебе оценку.");
+    if (state.streaks.measure % 5 === 0) {
+      praise(`Пятерка за смелость! ${state.streaks.measure} замеров подряд — это супер-привычка!`, true);
+    }
+    render();
+  }
+  if (act === "theme") {
+    state.theme = currentTheme() === "dark" ? "light" : "dark";
+    applyTheme();
+    commit();
+    render();
+    return;
+  }
+  if (act === "switch") {
+    state.role = null;
+    commit();
+    go("gate");
+  }
+  if (act === "trail-next") nextTrail();
+  if (act === "trail-restart") {
+    newTrail();
+    render();
+  }
+  if (act === "quiz-next") {
+    game.quiz.chosen = null;
+    game.quiz.i += 1;
+    if (game.quiz.i >= game.quiz.picked.length && !state.quizDoneToday) {
+      state.quizDoneToday = true;
+      state.streaks.quiz += 1;
+      addXp(15, 12);
+      if (!state.badges.includes("Любопытный")) state.badges.push("Любопытный");
+    }
+    if (game.quiz.i >= game.quiz.picked.length) completeMapNode();
+    render();
+  }
+}
+
+function onEdible(kind) {
+  const g = game.edible;
+  if (kind === "next") {
+    if (!g.feedback) return;
+    g.i += 1;
+    g.feedback = "";
+    g.chosen = null;
+    if (g.i >= 8) {
+      const finalScore = g.score;
+      addXp(finalScore, Math.max(5, Math.round(finalScore / 4)));
+      praise("Ты отлично поработал детективом этикеток!", true);
+      game.edible = { i: 0, score: 0, feedback: "" };
+      completeMapNode();
+      go(game.fromMap ? "map" : "games");
+      return;
+    }
+    return render();
+  }
+  if (g.feedback) return;
+  g.chosen = kind;
+  if (kind === "label") {
+    g.score += 10;
+    g.feedback = "Верно! На этикетке можно узнать состав и пищевую ценность конкретного продукта. Это игровое задание, не медицинская рекомендация.";
+  } else if (kind === "guess") {
+    g.feedback = "Цвет упаковки не рассказывает состав. Ищи таблицу пищевой ценности или спроси взрослого.";
+  } else {
+    g.feedback = "Следик не рассчитывает лекарства. Личные вопросы о лечении обсуждают со взрослым и медицинской командой.";
+  }
+  render();
+}
+
+function onQuiz(idx) {
+  if (game.quiz.chosen != null) return;
+  game.quiz.chosen = idx;
+  if (idx === game.quiz.picked[game.quiz.i].a) game.quiz.score += 1;
+  render();
+}
+
+function sendChat(text) {
+  if (!state.chat) state.chat = [];
+  state.chat.push({ who: "me", text });
+  state.chat.push({ who: "bot", text: answerChild(text) });
+  commit();
+  render();
+}
+
+function sendNote(text) {
+  const message = String(text).trim().slice(0, 180);
+  if (!message) return;
+  state.notes.unshift({ from: "Родитель", text: message, at: Date.now() });
+  state.notes = state.notes.slice(0, 30);
+  commit();
+  render();
+}
+
+function buySkin(id) {
+  const s = SKINS.find((x) => x.id === id);
+  if (!s) return;
+  if (state.unlocked.includes(id)) {
+    state.skin = id;
+  } else if (state.coins >= s.cost) {
+    state.coins -= s.cost;
+    state.unlocked.push(id);
+    state.skin = id;
+  }
+  commit();
+  render();
+}
+
+function buyOutfit(id) {
+  const c = CLOTHES.find((x) => x.id === id);
+  if (!c) return;
+  const level = getLevel();
+  
+  if (state.unlockedClothes.includes(id)) {
+    state.outfit = id;
+  } else if (state.coins >= c.cost && level >= c.level) {
+    state.coins -= c.cost;
+    state.unlockedClothes.push(id);
+    state.outfit = id;
+  }
+  commit();
+  render();
+}
+
+const TRAIL_BANK = [
+  { q: "Правда или миф: все люди реагируют на один и тот же продукт одинаково.", o: ["Правда", "Миф"], a: 1, why: "Реакции индивидуальны, поэтому игровые примеры ничего не предсказывают." },
+  { q: "Где искать количество углеводов в упакованном продукте?", o: ["В таблице пищевой ценности", "По цвету упаковки", "В рекламном слогане"], a: 0, why: "Таблица на этикетке показывает состав именно этого продукта." },
+  { q: "К кому можно обратиться, если тебе стало плохо или тревожно?", o: ["К надёжному взрослому", "Ни к кому", "К незнакомцу в интернете"], a: 0, why: "Взрослые и медицинская команда помогут по вашему плану." },
+  { q: "Правда или миф: игра может заменить врача.", o: ["Правда", "Миф"], a: 1, why: "Следик — игровой помощник, он не заменяет врача и семейный план." },
+  { q: "Что показывает гликемический индекс (ГИ)?", o: ["Как углеводы продукта могут влиять на глюкозу", "Сколько лекарства нужно", "Название витамина"], a: 0, why: "ГИ — лишь одна характеристика еды, он не определяет лечение." },
+  { q: "Правда или миф: продукты делятся только на «хорошие» и «плохие».", o: ["Правда", "Миф"], a: 1, why: "Важны состав, порция и семейный план, а не ярлыки." },
+  { q: "Что такое хлебная единица (ХЕ)?", o: ["Условный способ считать углеводы", "Доза лекарства", "Единица роста"], a: 0, why: "ХЕ помогает учитывать углеводы, но не определяет дозу." },
+  { q: "Что обычно указано в таблице пищевой ценности?", o: ["Белки, жиры, углеводы, энергия", "Только цена", "Только срок годности"], a: 0, why: "Именно там ищут данные о составе." },
+  { q: "Правда или миф: подсчёт ХЕ сам определяет дозу лекарства.", o: ["Правда", "Миф"], a: 1, why: "Решения о лечении принимают по плану с медицинской командой." },
+  { q: "Правда или миф: сахар измеряют, чтобы поставить тебе оценку.", o: ["Правда", "Миф"], a: 1, why: "Цифра — это информация для семьи и врача, а не оценка тебе." },
+  { q: "Почему важно говорить взрослым о самочувствии?", o: ["Чтобы получить помощь по плану", "Чтобы взрослые расстроились", "Это неважно"], a: 0, why: "Вместе проще справиться." },
+  { q: "Правда или миф: физическая активность влияет на всех одинаково.", o: ["Правда", "Миф"], a: 1, why: "План активности обсуждают с медицинской командой." },
+  { q: "Кто составляет личный план лечения?", o: ["Семья вместе с медицинской командой", "Игровой персонаж", "Случайный сайт"], a: 0, why: "Личный план — только с врачами." },
+  { q: "Что можно сделать вместе в магазине?", o: ["Найти и сравнить этикетки", "Соревноваться, кто съест меньше", "Угадывать состав по картинке"], a: 0, why: "Изучать этикетки — семейное исследование без запретов." },
+  { q: "Правда или миф: цифра на глюкометре говорит, хороший ты человек или нет.", o: ["Правда", "Миф"], a: 1, why: "Цифра ничего не говорит о тебе как о человеке." },
+  { q: "К чему относятся данные на этикетке «на 100 г» или «на порцию»?", o: ["К указанному количеству продукта", "К названию бренда", "К сроку хранения"], a: 0, why: "Всегда смотри, на какое количество указаны цифры." },
+  { q: "Правда или миф: ГИ показывает, сколько углеводов в порции.", o: ["Правда", "Миф"], a: 1, why: "ГИ описывает другое; количество углеводов смотрят на этикетке." },
+  { q: "Что делать, если встретил непонятное слово про диабет?", o: ["Спросить взрослого или врача", "Придумать значение самому", "Промолчать"], a: 0, why: "Вопросы — это нормально." },
+  { q: "Правда или миф: нужно стыдиться своих цифр.", o: ["Правда", "Миф"], a: 1, why: "Цифры — просто информация, стыдиться нечего." },
+  { q: "Для чего в приложении нужны серии (стрики)?", o: ["Помогают закреплять привычки", "Показывают уровень здоровья", "Сравнивают сахар с другими"], a: 0, why: "Рейтинг отмечает старание, а не медицинские показатели." },
+  { q: "Правда или миф: рейтинг в приложении зависит от цифры сахара.", o: ["Правда", "Миф"], a: 1, why: "Мы отмечаем интерес, старание и обучение." },
+  { q: "Что делать с вопросом «сколько лекарства принять?»", o: ["Спросить взрослого и следовать плану", "Спросить Следика", "Угадать"], a: 0, why: "Следик не рассчитывает лекарства." },
+  { q: "На что смотрят, сравнивая два йогурта?", o: ["На состав и пищевую ценность", "На цвет крышки", "На картинку на упаковке"], a: 0, why: "Данные на этикетке — самая надёжная подсказка." },
+  { q: "Правда или миф: углеводы бывают не только в сладком.", o: ["Правда", "Миф"], a: 0, why: "Они есть в хлебе, крупах, фруктах, молоке и многом другом." },
+  { q: "Что делать, если не понял правило из плана?", o: ["Попросить объяснить ещё раз", "Сделать вид, что понял", "Забыть о нём"], a: 0, why: "Объяснить ещё раз — задача взрослых и врачей." },
+  { q: "Правда или миф: просить помощи — это слабость.", o: ["Правда", "Миф"], a: 1, why: "Просить помощи — это смелость." },
+  { q: "Что значит «реакции индивидуальны»?", o: ["У разных людей бывает по-разному", "У всех одинаково", "Ни у кого не бывает"], a: 0, why: "Поэтому опираются на личный план." },
+  { q: "Правда или миф: правила подсчёта ХЕ везде одинаковые.", o: ["Правда", "Миф"], a: 1, why: "Системы бывают разные — следуй правилам своей команды." },
+  { q: "Что помогает семье поддерживать друг друга?", o: ["Добрые слова и совместные дела", "Упрёки за цифры", "Соревнование"], a: 0, why: "Забота работает лучше стыда." },
+  { q: "Правда или миф: смайлик на карточке продукта говорит, можно его есть или нет.", o: ["Правда", "Миф"], a: 1, why: "Игра не разрешает и не запрещает еду." }
+];
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function newTrail() {
+  let seen = Array.isArray(state.trailSeen) ? state.trailSeen : [];
+  let pool = TRAIL_BANK.map((q, id) => ({ ...q, id })).filter((q) => !seen.includes(q.id));
+  if (pool.length < 8) {
+    seen = [];
+    pool = TRAIL_BANK.map((q, id) => ({ ...q, id }));
+  }
+  const picked = shuffle(pool).slice(0, 8);
+  state.trailSeen = [...seen, ...picked.map((q) => q.id)];
+  commit();
+  game.trail = {
+    qs: picked.map((q) => ({ q: q.q, why: q.why, opts: shuffle(q.o.map((t, i) => ({ t, ok: i === q.a }))) })),
+    i: 0, hearts: 3, score: 0, correct: 0, chosen: null, done: false, won: false
+  };
+}
+
+function onTrail(idx) {
+  const g = game.trail;
+  if (g.chosen != null || g.done) return;
+  g.chosen = idx;
+  if (g.qs[g.i].opts[idx].ok) {
+    g.score += 10;
+    g.correct += 1;
+  } else {
+    g.hearts -= 1;
+  }
+  render();
+}
+
+function nextTrail() {
+  const g = game.trail;
+  if (g.chosen == null) return;
+  g.chosen = null;
+  g.i += 1;
+  if (g.hearts <= 0) {
+    g.done = true;
+    g.won = false;
+    addXp(Math.round(g.score / 2), 2);
+  } else if (g.i >= g.qs.length) {
+    g.done = true;
+    g.won = true;
+    addXp(g.score, Math.max(5, Math.round(g.score / 4)));
+    praise("Тропа Следика пройдена! Ты отлично знаешь свои правила.", true);
+    completeMapNode();
+  }
+  render();
+}
+
+// ===== Фото еды → родителям (общее хранилище страницы) =====
+let mealsCol = null;
+let meals = [];
+let mealsMsg = "";
+let scanLabelNext = "";
+const mealFile = document.getElementById("meal-file");
+
+function takeScanLabel() {
+  const l = scanLabelNext || "Скан: перекус записан";
+  scanLabelNext = "";
+  return l;
+}
+
+function typingNow() {
+  const a = document.activeElement;
+  return !!(a && app.contains(a) && /^(INPUT|TEXTAREA)$/.test(a.tagName));
+}
+
+function safePhoto(src) {
+  return typeof src === "string" && src.length < 400000 && /^data:image\/jpeg;base64,[A-Za-z0-9+\/=]+$/.test(src);
+}
+
+function mealTime(at) {
+  try {
+    return new Date(at).toLocaleString("ru-RU", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
+  } catch (e) {
+    return "";
+  }
+}
+
+function initMeals() {
+  try {
+    if (!window.claude || typeof window.claude.use !== "function") return;
+    window.claude.use("db").then((db) => {
+      if (!db) return;
+      mealsCol = db.collection("meals");
+      mealsCol.orderBy("at", "desc").limit(30).onSnapshot((snap) => {
+        meals = snap.docs.map((d) => Object.assign({ id: d.id }, d.data()));
+        if (!typingNow() && (route === "parent-home" || route === "child-home")) render();
+      }, () => { mealsCol = null; });
+    }).catch(() => {});
+  } catch (e) {}
+}
+
+function pickMealPhoto() {
+  mealsMsg = "";
+  mealFile.value = "";
+  mealFile.click();
+}
+
+function compressPhoto(file) {
+  return new Promise((resolve, reject) => {
+    const fr = new FileReader();
+    fr.onerror = () => reject({ code: "image" });
+    fr.onload = () => {
+      const img = new Image();
+      img.onerror = () => reject({ code: "image" });
+      img.onload = () => {
+        try {
+          let max = 720, q = 0.62, out = "";
+          for (let i = 0; i < 4; i++) {
+            const k = Math.min(1, max / Math.max(img.naturalWidth, img.naturalHeight));
+            const c = document.createElement("canvas");
+            c.width = Math.max(1, Math.round(img.naturalWidth * k));
+            c.height = Math.max(1, Math.round(img.naturalHeight * k));
+            c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
+            out = c.toDataURL("image/jpeg", q);
+            if (out.length < 180000) break;
+            max = Math.round(max * 0.8);
+            q = Math.max(0.4, q - 0.08);
+          }
+          resolve(out);
+        } catch (e) {
+          reject({ code: "image" });
+        }
+      };
+      img.src = String(fr.result);
+    };
+    fr.readAsDataURL(file);
+  });
+}
+
+mealFile.addEventListener("change", async () => {
+  const file = mealFile.files && mealFile.files[0];
+  if (!file) return;
+  mealsMsg = "Отправляю фото…";
+  if (route === "child-home") render();
+  let sent = false;
+  try {
+    const photo = await compressPhoto(file);
+    if (!mealsCol) throw { code: "no_db" };
+    await mealsCol.add({ photo, at: Date.now(), child: state.childName, comment: "", commentAt: 0 });
+    sent = true;
+  } catch (err) {
+    const code = err && err.code;
+    if (code === "image") {
+      mealsMsg = "Не получилось обработать фото. Попробуй ещё раз.";
+      mealFile.value = "";
+      render();
+      return;
+    }
+    mealsMsg =
+      code === "no_db" ? "Родителям фото не отправилось: нет общего доступа к приложению. Запись сделана только у тебя."
+      : code === "quota_exceeded" ? "Место для фото закончилось — попроси родителей удалить старые."
+      : "Фото не отправилось. Запись сделана только у тебя.";
+  }
+  if (sent) mealsMsg = "Фото отправлено родителям 📨";
+  scanLabelNext = sent ? "Скан: фото еды отправлено родителям" : "Скан: перекус записан (фото не отправлено)";
+  mealFile.value = "";
+  onAct("scan-photo");
+});
+
+async function commentMeal(id, text) {
+  if (!mealsCol) return;
+  try {
+    await mealsCol.doc(id).update({ comment: text, commentAt: Date.now() });
+  } catch (e) {}
+  if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
+  render();
+}
+
+async function deleteMeal(id) {
+  if (!mealsCol) return;
+  try {
+    await mealsCol.doc(id).delete();
+  } catch (e) {}
+}
+
+function mealsStatusHtml() {
+  return mealsMsg ? `<p class="tiny" role="status" style="margin-top:8px">${escapeHtml(mealsMsg)}</p>` : "";
+}
+
+function childMealsHtml() {
+  const list = meals.filter((m) => safePhoto(m.photo)).slice(0, 3);
+  if (!list.length) return "";
+  return `<div class="card"><h3>Фото для родителей</h3>${list
+    .map(
+      (m) => `<div class="meal">
+        <img class="meal-img" src="${m.photo}" alt="Фото еды" />
+        <div class="meal-body">
+          <div class="tiny">${escapeHtml(mealTime(m.at))}</div>
+          ${m.comment ? `<p class="meal-comment">💬 ${escapeHtml(m.comment)}</p>` : `<p class="tiny">Родители ещё не ответили</p>`}
+          <button class="btn btn-ghost sm" data-meal-del="${escapeHtml(m.id)}">Удалить</button>
+        </div>
+      </div>`
+    )
+    .join("")}</div>`;
+}
+
+function parentMealsHtml() {
+  const list = meals.filter((m) => safePhoto(m.photo)).slice(0, 10);
+  const body = list.length
+    ? list
+        .map(
+          (m) => `<div class="meal-big">
+        <img class="meal-img-big" src="${m.photo}" alt="Фото еды" />
+        <div class="tiny" style="margin:6px 0">${escapeHtml(mealTime(m.at))}</div>
+        ${m.comment ? `<p class="meal-comment">💬 ${escapeHtml(m.comment)}</p>` : ""}
+        <form data-meal-form="${escapeHtml(m.id)}" class="row">
+          <input class="field" name="text" maxlength="200" placeholder="${m.comment ? "Изменить комментарий" : "Комментарий к фото"}" />
+          <button class="btn btn-primary sm" type="submit">Ок</button>
+        </form>
+      </div>`
+        )
+        .join("")
+    : `<p class="tiny">${mealsCol ? "Пока нет фото — ребёнок ещё ничего не отправил." : "Общий доступ сейчас недоступен: фото появятся, когда страницу откроют по ссылке с доступом."}</p>`;
+  return `<div class="card"><h3>Фото еды от ${escapeHtml(state.childName)}</h3>${body}</div>`;
+}
+
+initMeals();
+render();
+
+</script>
+</body>
+</html>
